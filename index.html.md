@@ -1,0 +1,2880 @@
+  
+<!DOCTYPE html>  
+<html lang="ru">  
+<head>  
+    <meta charset="UTF-8" />  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />  
+    <meta name="theme-color" content="#58CC71" />  
+    <meta name="apple-mobile-web-app-capable" content="yes" />  
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />  
+    <link rel="manifest" href="data:application/json,{}" />  
+    <title>Армянский с нуля</title>  
+  
+    <style>  
+        /* ===== CSS ===== */  
+  
+        /* --- Reset & Base --- */  
+        *,  
+        *::before,  
+        *::after {  
+            box-sizing: border-box;  
+            margin: 0;  
+            padding: 0;  
+        }  
+  
+        :root {  
+            --green: #58CC71;  
+            --green-dark: #46b85e;  
+            --green-light: #e8f5e9;  
+            --green-bg: #f0faf2;  
+            --bg: #ffffff;  
+            --text: #1a1a2e;  
+            --text-secondary: #5a5a7a;  
+            --border: #e0e0e0;  
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);  
+            --radius: 16px;  
+            --radius-sm: 10px;  
+            --transition: 0.25s ease;  
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;  
+        }  
+  
+        html,  
+        body {  
+            font-family: var(--font);  
+            background: var(--bg);  
+            color: var(--text);  
+            height: 100%;  
+            overflow: hidden;  
+        }  
+  
+        /* --- Scrollbar --- */  
+        ::-webkit-scrollbar {  
+            width: 4px;  
+        }  
+        ::-webkit-scrollbar-track {  
+            background: transparent;  
+        }  
+        ::-webkit-scrollbar-thumb {  
+            background: var(--green);  
+            border-radius: 8px;  
+        }  
+  
+        /* --- App Shell --- */  
+        #app {  
+            display: flex;  
+            flex-direction: column;  
+            height: 100vh;  
+            max-width: 480px;  
+            margin: 0 auto;  
+            background: var(--bg);  
+            position: relative;  
+            overflow: hidden;  
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);  
+        }  
+  
+        /* --- Header --- */  
+        .app-header {  
+            display: flex;  
+            align-items: center;  
+            justify-content: space-between;  
+            padding: 12px 16px 8px;  
+            background: var(--bg);  
+            border-bottom: 1px solid var(--border);  
+            flex-shrink: 0;  
+            z-index: 10;  
+            min-height: 56px;  
+        }  
+  
+        .app-header .logo {  
+            font-weight: 700;  
+            font-size: 18px;  
+            color: var(--green-dark);  
+            display: flex;  
+            align-items: center;  
+            gap: 6px;  
+        }  
+  
+        .app-header .logo svg {  
+            width: 28px;  
+            height: 28px;  
+        }  
+  
+        .header-actions {  
+            display: flex;  
+            align-items: center;  
+            gap: 12px;  
+        }  
+  
+        .header-actions .xp-badge {  
+            background: var(--green-light);  
+            color: var(--green-dark);  
+            font-weight: 600;  
+            font-size: 13px;  
+            padding: 4px 12px;  
+            border-radius: 20px;  
+            display: flex;  
+            align-items: center;  
+            gap: 4px;  
+        }  
+  
+        .header-actions .streak-badge {  
+            display: flex;  
+            align-items: center;  
+            gap: 3px;  
+            font-weight: 600;  
+            font-size: 14px;  
+            color: #f5a623;  
+        }  
+  
+        .header-actions .streak-badge svg {  
+            width: 20px;  
+            height: 20px;  
+        }  
+  
+        /* --- Main Content --- */  
+        .main-content {  
+            flex: 1;  
+            overflow-y: auto;  
+            overflow-x: hidden;  
+            padding: 16px 16px 80px;  
+            scroll-behavior: smooth;  
+        }  
+  
+        /* --- Bottom Nav --- */  
+        .bottom-nav {  
+            display: flex;  
+            align-items: center;  
+            justify-content: space-around;  
+            padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;  
+            background: var(--bg);  
+            border-top: 1px solid var(--border);  
+            flex-shrink: 0;  
+            position: sticky;  
+            bottom: 0;  
+            z-index: 20;  
+            backdrop-filter: blur(12px);  
+            -webkit-backdrop-filter: blur(12px);  
+        }  
+  
+        .bottom-nav button {  
+            background: none;  
+            border: none;  
+            display: flex;  
+            flex-direction: column;  
+            align-items: center;  
+            font-size: 11px;  
+            color: var(--text-secondary);  
+            padding: 4px 12px;  
+            cursor: pointer;  
+            transition: color var(--transition);  
+            gap: 2px;  
+            font-family: var(--font);  
+            position: relative;  
+        }  
+  
+        .bottom-nav button svg {  
+            width: 26px;  
+            height: 26px;  
+            stroke: currentColor;  
+            fill: none;  
+            stroke-width: 2;  
+            transition: stroke var(--transition);  
+        }  
+  
+        .bottom-nav button.active {  
+            color: var(--green-dark);  
+            font-weight: 600;  
+        }  
+  
+        .bottom-nav button.active svg {  
+            stroke: var(--green-dark);  
+            fill: var(--green-light);  
+        }  
+  
+        .bottom-nav button .badge {  
+            position: absolute;  
+            top: 0;  
+            right: 4px;  
+            background: #ff6b6b;  
+            color: #fff;  
+            font-size: 9px;  
+            font-weight: 700;  
+            padding: 1px 6px;  
+            border-radius: 10px;  
+            min-width: 18px;  
+            text-align: center;  
+            line-height: 16px;  
+        }  
+  
+        /* --- Views --- */  
+        .view {  
+            display: none;  
+            animation: fadeSlide 0.3s ease;  
+        }  
+  
+        .view.active {  
+            display: block;  
+        }  
+  
+        @keyframes fadeSlide {  
+            0% {  
+                opacity: 0;  
+                transform: translateY(12px);  
+            }  
+            100% {  
+                opacity: 1;  
+                transform: translateY(0);  
+            }  
+        }  
+  
+        /* --- Cards --- */  
+        .card {  
+            background: var(--bg);  
+            border-radius: var(--radius);  
+            box-shadow: var(--shadow);  
+            padding: 18px 16px;  
+            margin-bottom: 14px;  
+            border: 1px solid var(--border);  
+            transition: transform 0.2s;  
+        }  
+  
+        .card:active {  
+            transform: scale(0.98);  
+        }  
+  
+        .card-green {  
+            background: var(--green-light);  
+            border-color: var(--green);  
+        }  
+  
+        /* --- Buttons --- */  
+        .btn {  
+            display: inline-flex;  
+            align-items: center;  
+            justify-content: center;  
+            gap: 8px;  
+            padding: 12px 24px;  
+            border-radius: var(--radius-sm);  
+            font-weight: 600;  
+            font-size: 15px;  
+            border: none;  
+            cursor: pointer;  
+            transition: all var(--transition);  
+            font-family: var(--font);  
+            width: 100%;  
+            text-decoration: none;  
+        }  
+  
+        .btn-primary {  
+            background: var(--green);  
+            color: #fff;  
+        }  
+  
+        .btn-primary:hover {  
+            background: var(--green-dark);  
+            transform: translateY(-1px);  
+            box-shadow: 0 6px 20px rgba(88, 204, 113, 0.3);  
+        }  
+  
+        .btn-primary:active {  
+            transform: scale(0.97);  
+        }  
+  
+        .btn-outline {  
+            background: transparent;  
+            color: var(--green-dark);  
+            border: 2px solid var(--green);  
+        }  
+  
+        .btn-outline:hover {  
+            background: var(--green-light);  
+        }  
+  
+        .btn-secondary {  
+            background: var(--border);  
+            color: var(--text-secondary);  
+        }  
+  
+        .btn-success {  
+            background: #4caf50;  
+            color: #fff;  
+        }  
+  
+        .btn-danger {  
+            background: #ff6b6b;  
+            color: #fff;  
+        }  
+  
+        .btn-small {  
+            padding: 6px 14px;  
+            font-size: 13px;  
+            width: auto;  
+        }  
+  
+        .btn:disabled {  
+            opacity: 0.5;  
+            cursor: not-allowed;  
+            transform: none !important;  
+        }  
+  
+        /* --- Lesson List --- */  
+        .lesson-item {  
+            display: flex;  
+            align-items: center;  
+            gap: 14px;  
+            padding: 14px 16px;  
+            background: var(--bg);  
+            border-radius: var(--radius-sm);  
+            border: 1px solid var(--border);  
+            margin-bottom: 10px;  
+            cursor: pointer;  
+            transition: all var(--transition);  
+        }  
+  
+        .lesson-item:active {  
+            transform: scale(0.97);  
+        }  
+  
+        .lesson-item.locked {  
+            opacity: 0.5;  
+            cursor: not-allowed;  
+        }  
+  
+        .lesson-item.completed {  
+            border-color: var(--green);  
+            background: var(--green-light);  
+        }  
+  
+        .lesson-item .icon {  
+            width: 40px;  
+            height: 40px;  
+            border-radius: 50%;  
+            background: var(--green-light);  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+            font-size: 20px;  
+            flex-shrink: 0;  
+        }  
+  
+        .lesson-item .info {  
+            flex: 1;  
+        }  
+  
+        .lesson-item .info h4 {  
+            font-size: 15px;  
+            font-weight: 600;  
+        }  
+  
+        .lesson-item .info p {  
+            font-size: 13px;  
+            color: var(--text-secondary);  
+            margin-top: 2px;  
+        }  
+  
+        .lesson-item .status {  
+            font-size: 20px;  
+        }  
+  
+        .lesson-item .progress-bar {  
+            width: 60px;  
+            height: 4px;  
+            background: var(--border);  
+            border-radius: 4px;  
+            overflow: hidden;  
+        }  
+  
+        .lesson-item .progress-bar .fill {  
+            height: 100%;  
+            background: var(--green);  
+            border-radius: 4px;  
+            transition: width 0.5s;  
+        }  
+  
+        /* --- Word Card (lesson detail) --- */  
+        .word-card {  
+            background: var(--bg);  
+            border-radius: var(--radius);  
+            padding: 20px 18px;  
+            margin-bottom: 14px;  
+            border: 1px solid var(--border);  
+            box-shadow: var(--shadow);  
+        }  
+  
+        .word-card .armenian {  
+            font-size: 28px;  
+            font-weight: 700;  
+            color: var(--text);  
+            line-height: 1.3;  
+        }  
+  
+        .word-card .translit {  
+            font-size: 16px;  
+            color: var(--text-secondary);  
+            margin-top: 2px;  
+            font-style: italic;  
+        }  
+  
+        .word-card .russian {  
+            font-size: 18px;  
+            font-weight: 600;  
+            color: var(--text);  
+            margin-top: 6px;  
+        }  
+  
+        .word-card .usage {  
+            font-size: 14px;  
+            color: var(--text-secondary);  
+            margin-top: 8px;  
+            padding: 10px 14px;  
+            background: var(--green-light);  
+            border-radius: var(--radius-sm);  
+            line-height: 1.5;  
+        }  
+  
+        .word-card .examples {  
+            margin-top: 12px;  
+        }  
+  
+        .word-card .examples .ex {  
+            padding: 8px 0;  
+            border-bottom: 1px solid var(--border);  
+            font-size: 14px;  
+            line-height: 1.6;  
+        }  
+  
+        .word-card .examples .ex:last-child {  
+            border-bottom: none;  
+        }  
+  
+        .word-card .examples .ex .hy {  
+            font-weight: 500;  
+        }  
+  
+        .word-card .examples .ex .ru {  
+            color: var(--text-secondary);  
+            font-size: 13px;  
+        }  
+  
+        .word-card .audio-btn {  
+            margin-top: 12px;  
+            background: var(--green-light);  
+            border: none;  
+            padding: 8px 16px;  
+            border-radius: 30px;  
+            font-size: 14px;  
+            font-weight: 500;  
+            color: var(--green-dark);  
+            cursor: pointer;  
+            display: inline-flex;  
+            align-items: center;  
+            gap: 6px;  
+            transition: all var(--transition);  
+        }  
+  
+        .word-card .audio-btn:hover {  
+            background: var(--green);  
+            color: #fff;  
+        }  
+  
+        .word-card .audio-btn:active {  
+            transform: scale(0.95);  
+        }  
+  
+        /* --- Exercise --- */  
+        .exercise-container {  
+            margin-top: 16px;  
+            padding: 18px 16px;  
+            background: var(--green-light);  
+            border-radius: var(--radius);  
+            border: 1px solid var(--green);  
+        }  
+  
+        .exercise-container .ex-title {  
+            font-weight: 600;  
+            font-size: 15px;  
+            margin-bottom: 12px;  
+        }  
+  
+        .exercise-container .ex-question {  
+            font-size: 16px;  
+            margin-bottom: 12px;  
+            line-height: 1.5;  
+        }  
+  
+        .exercise-container .ex-options {  
+            display: flex;  
+            flex-direction: column;  
+            gap: 8px;  
+        }  
+  
+        .exercise-container .ex-options button {  
+            padding: 10px 14px;  
+            border-radius: var(--radius-sm);  
+            border: 2px solid var(--border);  
+            background: var(--bg);  
+            font-size: 15px;  
+            cursor: pointer;  
+            transition: all var(--transition);  
+            text-align: left;  
+            font-family: var(--font);  
+            color: var(--text);  
+        }  
+  
+        .exercise-container .ex-options button:hover {  
+            border-color: var(--green);  
+            background: var(--green-light);  
+        }  
+  
+        .exercise-container .ex-options button.selected-correct {  
+            border-color: #4caf50;  
+            background: #e8f5e9;  
+        }  
+  
+        .exercise-container .ex-options button.selected-wrong {  
+            border-color: #ff6b6b;  
+            background: #fce4e4;  
+        }  
+  
+        .exercise-container .ex-options button.disabled {  
+            pointer-events: none;  
+            opacity: 0.7;  
+        }  
+  
+        .exercise-container .ex-feedback {  
+            margin-top: 12px;  
+            padding: 12px 14px;  
+            border-radius: var(--radius-sm);  
+            font-weight: 500;  
+            font-size: 14px;  
+            display: none;  
+        }  
+  
+        .exercise-container .ex-feedback.correct {  
+            display: block;  
+            background: #e8f5e9;  
+            color: #2e7d32;  
+            border: 1px solid #a5d6a7;  
+        }  
+  
+        .exercise-container .ex-feedback.wrong {  
+            display: block;  
+            background: #fce4e4;  
+            color: #c62828;  
+            border: 1px solid #ef9a9a;  
+        }  
+  
+        /* --- Grammar --- */  
+        .grammar-box {  
+            background: #f3f7ff;  
+            border-radius: var(--radius);  
+            padding: 16px 18px;  
+            margin: 14px 0;  
+            border-left: 4px solid var(--green);  
+        }  
+  
+        .grammar-box h4 {  
+            font-size: 16px;  
+            margin-bottom: 6px;  
+        }  
+  
+        .grammar-box p {  
+            font-size: 14px;  
+            line-height: 1.6;  
+            color: var(--text-secondary);  
+        }  
+  
+        /* --- Progress --- */  
+        .progress-ring {  
+            display: flex;  
+            align-items: center;  
+            gap: 14px;  
+        }  
+  
+        .progress-ring .ring {  
+            width: 48px;  
+            height: 48px;  
+            border-radius: 50%;  
+            background: conic-gradient(var(--green) var(--pct, 0%), var(--border) var(--pct, 0%));  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+            font-weight: 700;  
+            font-size: 14px;  
+            color: var(--text);  
+        }  
+  
+        .progress-ring .ring .inner {  
+            width: 38px;  
+            height: 38px;  
+            border-radius: 50%;  
+            background: var(--bg);  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+        }  
+  
+        /* --- Profile --- */  
+        .profile-header {  
+            text-align: center;  
+            padding: 16px 0;  
+        }  
+  
+        .profile-header .avatar {  
+            width: 72px;  
+            height: 72px;  
+            border-radius: 50%;  
+            background: var(--green-light);  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+            font-size: 36px;  
+            margin: 0 auto 8px;  
+            border: 3px solid var(--green);  
+        }  
+  
+        .profile-header .name {  
+            font-size: 20px;  
+            font-weight: 700;  
+        }  
+  
+        .profile-header .level {  
+            font-size: 14px;  
+            color: var(--text-secondary);  
+        }  
+  
+        .stats-grid {  
+            display: grid;  
+            grid-template-columns: 1fr 1fr 1fr;  
+            gap: 10px;  
+            margin: 14px 0;  
+        }  
+  
+        .stats-grid .stat {  
+            text-align: center;  
+            padding: 12px 6px;  
+            background: var(--green-light);  
+            border-radius: var(--radius-sm);  
+        }  
+  
+        .stats-grid .stat .num {  
+            font-size: 22px;  
+            font-weight: 700;  
+            color: var(--green-dark);  
+        }  
+  
+        .stats-grid .stat .label {  
+            font-size: 11px;  
+            color: var(--text-secondary);  
+            margin-top: 2px;  
+        }  
+  
+        /* --- Achievements --- */  
+        .achievement-grid {  
+            display: grid;  
+            grid-template-columns: repeat(3, 1fr);  
+            gap: 10px;  
+            margin: 12px 0;  
+        }  
+  
+        .achievement-grid .ach {  
+            text-align: center;  
+            padding: 12px 6px;  
+            background: var(--border);  
+            border-radius: var(--radius-sm);  
+            opacity: 0.4;  
+            transition: all var(--transition);  
+        }  
+  
+        .achievement-grid .ach.unlocked {  
+            opacity: 1;  
+            background: var(--green-light);  
+            border: 1px solid var(--green);  
+        }  
+  
+        .achievement-grid .ach .icon {  
+            font-size: 28px;  
+        }  
+  
+        .achievement-grid .ach .label {  
+            font-size: 10px;  
+            color: var(--text-secondary);  
+            margin-top: 4px;  
+        }  
+  
+        /* --- Calendar --- */  
+        .calendar-grid {  
+            display: grid;  
+            grid-template-columns: repeat(7, 1fr);  
+            gap: 4px;  
+            margin: 10px 0;  
+        }  
+  
+        .calendar-grid .day {  
+            aspect-ratio: 1;  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+            font-size: 12px;  
+            font-weight: 500;  
+            border-radius: 50%;  
+            background: var(--border);  
+            color: var(--text-secondary);  
+        }  
+  
+        .calendar-grid .day.active {  
+            background: var(--green);  
+            color: #fff;  
+        }  
+  
+        .calendar-grid .day.today {  
+            border: 2px solid var(--green-dark);  
+        }  
+  
+        .calendar-grid .day.empty {  
+            background: transparent;  
+        }  
+  
+        /* --- Settings --- */  
+        .settings-item {  
+            display: flex;  
+            align-items: center;  
+            justify-content: space-between;  
+            padding: 12px 0;  
+            border-bottom: 1px solid var(--border);  
+        }  
+  
+        .settings-item:last-child {  
+            border-bottom: none;  
+        }  
+  
+        .settings-item .label {  
+            font-size: 15px;  
+        }  
+  
+        .settings-item .desc {  
+            font-size: 13px;  
+            color: var(--text-secondary);  
+        }  
+  
+        /* Toggle */  
+        .toggle {  
+            width: 48px;  
+            height: 28px;  
+            border-radius: 14px;  
+            background: var(--border);  
+            cursor: pointer;  
+            transition: background var(--transition);  
+            position: relative;  
+            flex-shrink: 0;  
+        }  
+  
+        .toggle.on {  
+            background: var(--green);  
+        }  
+  
+        .toggle .thumb {  
+            width: 22px;  
+            height: 22px;  
+            border-radius: 50%;  
+            background: #fff;  
+            position: absolute;  
+            top: 3px;  
+            left: 3px;  
+            transition: transform var(--transition);  
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);  
+        }  
+  
+        .toggle.on .thumb {  
+            transform: translateX(20px);  
+        }  
+  
+        /* --- Misc --- */  
+        .text-center {  
+            text-align: center;  
+        }  
+  
+        .mt-8 {  
+            margin-top: 8px;  
+        }  
+        .mt-12 {  
+            margin-top: 12px;  
+        }  
+        .mt-16 {  
+            margin-top: 16px;  
+        }  
+        .mb-8 {  
+            margin-bottom: 8px;  
+        }  
+        .mb-12 {  
+            margin-bottom: 12px;  
+        }  
+        .gap-8 {  
+            gap: 8px;  
+        }  
+        .flex {  
+            display: flex;  
+        }  
+        .flex-col {  
+            flex-direction: column;  
+        }  
+        .items-center {  
+            align-items: center;  
+        }  
+        .justify-between {  
+            justify-content: space-between;  
+        }  
+        .flex-1 {  
+            flex: 1;  
+        }  
+        .w-full {  
+            width: 100%;  
+        }  
+  
+        .tag {  
+            display: inline-block;  
+            padding: 2px 10px;  
+            border-radius: 12px;  
+            font-size: 11px;  
+            font-weight: 600;  
+            background: var(--green-light);  
+            color: var(--green-dark);  
+        }  
+  
+        /* --- Responsive tweaks --- */  
+        @media (max-width: 480px) {  
+            .app-header .logo {  
+                font-size: 16px;  
+            }  
+            .word-card .armenian {  
+                font-size: 24px;  
+            }  
+            .stats-grid {  
+                grid-template-columns: 1fr 1fr 1fr;  
+            }  
+            .achievement-grid {  
+                grid-template-columns: repeat(3, 1fr);  
+            }  
+        }  
+  
+        @media (min-width: 481px) {  
+            #app {  
+                border-left: 1px solid var(--border);  
+                border-right: 1px solid var(--border);  
+            }  
+        }  
+  
+        /* --- PWA splash --- */  
+        .pwa-install {  
+            background: var(--green-light);  
+            border-radius: var(--radius-sm);  
+            padding: 12px 16px;  
+            display: flex;  
+            align-items: center;  
+            justify-content: space-between;  
+            margin-bottom: 14px;  
+            border: 1px solid var(--green);  
+        }  
+  
+        .pwa-install .text {  
+            font-size: 14px;  
+            font-weight: 500;  
+        }  
+  
+        .pwa-install .text small {  
+            font-weight: 400;  
+            color: var(--text-secondary);  
+            display: block;  
+            font-size: 12px;  
+        }  
+  
+        /* --- Empty state --- */  
+        .empty-state {  
+            text-align: center;  
+            padding: 40px 20px;  
+            color: var(--text-secondary);  
+        }  
+  
+        .empty-state .icon {  
+            font-size: 48px;  
+            margin-bottom: 12px;  
+        }  
+        .empty-state h3 {  
+            font-size: 18px;  
+            color: var(--text);  
+            margin-bottom: 4px;  
+        }  
+  
+        /* --- Lesson progress inside lesson --- */  
+        .lesson-progress {  
+            display: flex;  
+            align-items: center;  
+            gap: 8px;  
+            margin-bottom: 14px;  
+            padding: 8px 12px;  
+            background: var(--green-light);  
+            border-radius: var(--radius-sm);  
+            font-size: 14px;  
+            font-weight: 500;  
+        }  
+  
+        .lesson-progress .bar {  
+            flex: 1;  
+            height: 4px;  
+            background: var(--border);  
+            border-radius: 4px;  
+            overflow: hidden;  
+        }  
+  
+        .lesson-progress .bar .fill {  
+            height: 100%;  
+            background: var(--green);  
+            border-radius: 4px;  
+            transition: width 0.4s;  
+        }  
+  
+        /* Review words */  
+        .review-word {  
+            padding: 10px 14px;  
+            background: var(--bg);  
+            border-radius: var(--radius-sm);  
+            border: 1px solid var(--border);  
+            margin-bottom: 8px;  
+            display: flex;  
+            justify-content: space-between;  
+            align-items: center;  
+        }  
+  
+        .review-word .hy {  
+            font-weight: 600;  
+            font-size: 16px;  
+        }  
+  
+        .review-word .ru {  
+            color: var(--text-secondary);  
+            font-size: 14px;  
+        }  
+  
+        /* Toast notification */  
+        .toast {  
+            position: fixed;  
+            bottom: 80px;  
+            left: 50%;  
+            transform: translateX(-50%) translateY(100px);  
+            background: var(--text);  
+            color: #fff;  
+            padding: 12px 24px;  
+            border-radius: var(--radius-sm);  
+            font-weight: 500;  
+            font-size: 14px;  
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);  
+            opacity: 0;  
+            transition: all 0.4s ease;  
+            z-index: 100;  
+            max-width: 90%;  
+            text-align: center;  
+            pointer-events: none;  
+        }  
+  
+        .toast.show {  
+            opacity: 1;  
+            transform: translateX(-50%) translateY(0);  
+        }  
+  
+        /* Confetti-like animation for XP gain */  
+        .xp-popup {  
+            position: fixed;  
+            top: 50%;  
+            left: 50%;  
+            transform: translate(-50%, -50%) scale(0.5);  
+            font-size: 48px;  
+            font-weight: 700;  
+            color: var(--green-dark);  
+            opacity: 0;  
+            pointer-events: none;  
+            z-index: 50;  
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);  
+        }  
+  
+        .xp-popup.show {  
+            opacity: 1;  
+            transform: translate(-50%, -50%) scale(1);  
+        }  
+    </style>  
+</head>  
+<body>  
+  
+    <!-- ===== HTML ===== -->  
+    <div id="app">  
+        <!-- Header -->  
+        <header class="app-header">  
+            <div class="logo">  
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">  
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />  
+                    <path d="M2 17l10 5 10-5" />  
+                    <path d="M2 12l10 5 10-5" />  
+                </svg>  
+                Армянский  
+            </div>  
+            <div class="header-actions">  
+                <span class="xp-badge">⭐ <span id="xpDisplay">0</span></span>  
+                <span class="streak-badge">  
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">  
+                        <path d="M12 2v4M12 22v-4M4 12H2M22 12h-2M19.07 4.93l-2.83 2.83M6.34 17.66l-2.83 2.83M17.66 6.34l2.83-2.83M4.93 19.07l2.83-2.83" />  
+                    </svg>  
+                    <span id="streakDisplay">0</span>  
+                </span>  
+            </div>  
+        </header>  
+  
+        <!-- Main Content -->  
+        <div class="main-content" id="mainContent">  
+            <!-- Views -->  
+            <div id="viewHome" class="view active">  
+                <!-- будет заполнено JS -->  
+            </div>  
+            <div id="viewLessons" class="view">  
+                <!-- будет заполнено JS -->  
+            </div>  
+            <div id="viewLesson" class="view">  
+                <!-- будет заполнено JS -->  
+            </div>  
+            <div id="viewProfile" class="view">  
+                <!-- будет заполнено JS -->  
+            </div>  
+            <div id="viewAchievements" class="view">  
+                <!-- будет заполнено JS -->  
+            </div>  
+            <div id="viewSettings" class="view">  
+                <!-- будет заполнено JS -->  
+            </div>  
+        </div>  
+  
+        <!-- Bottom Navigation -->  
+        <nav class="bottom-nav">  
+            <button data-view="viewHome" class="active">  
+                <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>  
+                <span>Главная</span>  
+            </button>  
+            <button data-view="viewLessons">  
+                <svg viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>  
+                <span>Уроки</span>  
+                <span class="badge" id="lessonBadge" style="display:none;">0</span>  
+            </button>  
+            <button data-view="viewProfile">  
+                <svg viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>  
+                <span>Профиль</span>  
+            </button>  
+            <button data-view="viewAchievements">  
+                <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>  
+                <span>Достижения</span>  
+            </button>  
+            <button data-view="viewSettings">  
+                <svg viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>  
+                <span>Настройки</span>  
+            </button>  
+        </nav>  
+  
+        <!-- Toast -->  
+        <div class="toast" id="toast"></div>  
+  
+        <!-- XP Popup -->  
+        <div class="xp-popup" id="xpPopup">+10 XP</div>  
+    </div>  
+  
+    <script>  
+        // ============================================================  
+        //  JAVASCRIPT  
+        // ============================================================  
+  
+        // ---------- DATA: 15 уровней, 300+ слов ----------  
+        const LESSONS_DATA = [{  
+            id: 'greeting',  
+            title: 'Приветствие',  
+            icon: '👋',  
+            words: [  
+                { hy: '**Բարև**', tr: 'Barev', ru: 'Привет', usage: 'Универсальное приветствие для любого времени дня.',  
+                    examples: ['**Բարև**, **ինչպես** **ես**? — Привет, как дела?', '**Բարև**, **ուրախ** **եմ** **տեսնել** **քեզ**. — Привет, рад тебя видеть.'] },  
+                { hy: '**Բարև** **ձեզ**', tr: 'Barev dzez', ru: 'Здравствуйте (вежл.)', usage: 'Вежливая форма приветствия.',  
+                    examples: ['**Բարև** **ձեզ**, **պարոն** **Սմիթ**. — Здравствуйте, мистер Смит.'] },  
+                { hy: '**Ողջույն**', tr: 'Voghjuyn', ru: 'Приветствие', usage: 'Формальное приветствие.',  
+                    examples: ['**Ողջույն**, **բոլորին**. — Привет всем.'] },  
+                { hy: '**Ինչպես** **ես**?', tr: 'Inchpes es?', ru: 'Как дела? (неформ.)', usage: 'Вопрос о самочувствии.',  
+                    examples: ['**Ինչպես** **ես**, **ընկեր**? — Как дела, друг?'] },  
+                { hy: '**Ինչպե՞ս** **եք**', tr: 'Inchpes ek?', ru: 'Как дела? (форм.)', usage: 'Вежливый вопрос.',  
+                    examples: ['**Ինչպե՞ս** **եք**, **տիկին**? — Как дела, госпожа?'] },  
+                { hy: '**Լավ**', tr: 'Lav', ru: 'Хорошо', usage: 'Ответ на "как дела".', examples: ['**Լավ** **եմ**, **շնորհակալություն**. — Хорошо, спасибо.'] },  
+                { hy: '**Շնորհակալություն**', tr: 'Shnorhakalutyun', ru: 'Спасибо', usage: 'Выражение благодарности.',  
+                    examples: ['**Շնորհակալություն** **օգնության** **համար**. — Спасибо за помощь.'] },  
+                { hy: '**Խնդրեմ**', tr: 'Khndrem', ru: 'Пожалуйста (ответ на спасибо)', usage: 'Вежливый ответ.',  
+                    examples: ['— **Շնորհակալություն**: — **Խնդրեմ**. — Спасибо. — Пожалуйста.'] },  
+                { hy: '**Ցտեսություն**', tr: 'Ts.tesutyun', ru: 'До свидания', usage: 'Прощание.', examples: ['**Ցտեսություն**, **մինչև** **հաջորդ** **անգամ**. — До свидания, до следующего раза.'] },  
+                { hy: '**Հաջողություն**', tr: 'Hajoghutyun', ru: 'Удачи', usage: 'Пожелание удачи.', examples: ['**Հաջողություն** **քեզ**! — Удачи тебе!'] },  
+                { hy: '**Բարի** **լույս**', tr: 'Bari luys', ru: 'Доброе утро', usage: 'Утреннее приветствие.',  
+                    examples: ['**Բարի** **լույս**, **արև**: — Доброе утро, солнце.'] },  
+                { hy: '**Բարի** **օր**', tr: 'Bari or', ru: 'Добрый день', usage: 'Дневное приветствие.', examples: ['**Բարի** **օր**, **բոլորին**: — Добрый день всем.'] },  
+                { hy: '**Բարի** **երեկո**', tr: 'Bari yereko', ru: 'Добрый вечер', usage: 'Вечернее приветствие.',  
+                    examples: ['**Բարի** **երեկո**, **ինչպես** **եք**: — Добрый вечер, как вы?'] },  
+                { hy: '**Բարի** **գիշեր**', tr: 'Bari gisher', ru: 'Доброй ночи', usage: 'Пожелание перед сном.',  
+                    examples: ['**Բարի** **գիշեր**, **քաղցր** **երազներ**: — Доброй ночи, сладких снов.'] },  
+                { hy: '**Այո**', tr: 'Ayo', ru: 'Да', usage: 'Утвердительный ответ.', examples: ['**Այո**, **համաձայն** **եմ**: — Да, согласен.'] },  
+                { hy: '**Ոչ**', tr: 'Voch', ru: 'Нет', usage: 'Отрицательный ответ.', examples: ['**Ոչ**, **շնորհակալություն**: — Нет, спасибо.'] },  
+                { hy: '**Շատ** **լավ**', tr: 'Shat lav', ru: 'Очень хорошо', usage: 'Усиление.', examples: ['**Շատ** **լավ** **եմ**: — Очень хорошо.'] },  
+                { hy: '**Լավ** **չէ**', tr: 'Lav che', ru: 'Не очень', usage: 'Отрицательный ответ о состоянии.',  
+                    examples: ['**Լավ** **չէ**, **գլուխս** **ցավում** **է**: — Не очень, болит голова.'] },  
+                { hy: '**Ինչ** **կա**?', tr: 'Inch ka?', ru: 'Что случилось?', usage: 'Вопрос о происходящем.',  
+                    examples: ['**Ինչ** **կա**, **ինչու** **ես** **տխուր**: — Что случилось, почему ты грустный?'] },  
+                { hy: '**Ամեն** **ինչ** **լավ** **է**', tr: 'Amen inch lav e', ru: 'Всё хорошо', usage: 'Успокаивающий ответ.',  
+                    examples: ['**Ամեն** **ինչ** **լավ** **է**, **մի** **անհանգստացիր**: — Всё хорошо, не волнуйся.'] },  
+            ],  
+            grammar: {  
+                title: 'Приветствия и вежливость',  
+                explanation: 'В армянском языке есть формальное и неформальное обращение. "**Բարև**" — для друзей, "**Բարև** **ձեզ**" — для старших или незнакомых. Вопрос "**Ինչպես** **ես**?" используют с близкими, а "**Ինչպե՞ս** **եք**" — в официальной обстановке.'  
+            }  
+        }, {  
+            id: 'intro',  
+            title: 'Знакомство',  
+            icon: '🤝',  
+            words: [  
+                { hy: '**Անուն**', tr: 'Anun', ru: 'Имя', usage: 'Спросить или назвать имя.',  
+                    examples: ['**Իմ** **անունը** **Արամ** **է**: — Меня зовут Арам.'] },  
+                { hy: '**Իմ** **անունը** ... **է**', tr: 'Im anuny ... e', ru: 'Меня зовут ...', usage: 'Представление.',  
+                    examples: ['**Իմ** **անունը** **Աննա** **է**: — Меня зовут Анна.'] },  
+                { hy: '**Ինչ** **է** **քո** **անունը**?', tr: 'Inch e ko anuny?', ru: 'Как тебя зовут?', usage: 'Вопрос к другу.',  
+                    examples: ['**Ինչ** **է** **քո** **անունը**: — Как тебя зовут?'] },  
+                { hy: '**Ինչ** **է** **Ձեր** **անունը**?', tr: 'Inch e Dzer anuny?', ru: 'Как Вас зовут? (вежл.)', usage: 'Официальный вопрос.',  
+                    examples: ['**Ինչ** **է** **Ձեր** **անունը**, **պարոն**: — Как Вас зовут, господин?'] },  
+                { hy: '**Ուրախ** **եմ** **տեսնելու**', tr: 'Urakh em tesnelu', ru: 'Рад(а) видеть', usage: 'Выражение радости.',  
+                    examples: ['**Ուրախ** **եմ** **տեսնելու** **ձեզ**: — Рад(а) Вас видеть.'] },  
+                { hy: '**Ծանոթություն**', tr: 'Tsanotutyun', ru: 'Знакомство', usage: 'Слово для представления.',  
+                    examples: ['**Թույլ** **տվեք** **ներկայացնել** **իմ** **ընկերոջը**: — Позвольте представить моего друга.'] },  
+                { hy: '**Որտեղից** **ես**?', tr: 'Vorteghits es?', ru: 'Откуда ты?', usage: 'Вопрос о происхождении.',  
+                    examples: ['**Որտեղից** **ես**, **Արամ**: — Откуда ты, Арам?'] },  
+                { hy: '**Ես** **Հայաստանից** **եմ**', tr: 'Yes Hayastanits em', ru: 'Я из Армении', usage: 'Ответ о происхождении.',  
+                    examples: ['**Ես** **Հայաստանից** **եմ**, **իսկ** **դու**: — Я из Армении, а ты?'] },  
+                { hy: '**Ես** **Ռուսաստանից** **եմ**', tr: 'Yes Rusastanits em', ru: 'Я из России', usage: 'Ответ.',  
+                    examples: ['**Ես** **Ռուսաստանից** **եմ**: — Я из России.'] },  
+                { hy: '**Քանի՞** **տարեկան** **ես**', tr: 'Kani tarekan es?', ru: 'Сколько тебе лет?', usage: 'Вопрос о возрасте.',  
+                    examples: ['**Քանի՞** **տարեկան** **ես**, **Աննա**: — Сколько тебе лет, Анна?'] },  
+                { hy: '**Ես** **քսան** **տարեկան** **եմ**', tr: 'Yes ksan tarekan em', ru: 'Мне 20 лет', usage: 'Ответ о возрасте.',  
+                    examples: ['**Ես** **քսան** **տարեկան** **եմ**: — Мне 20 лет.'] },  
+                { hy: '**Որտեղ** **ես** **ապրում**?', tr: 'Vortegh es aprum?', ru: 'Где ты живёшь?', usage: 'Вопрос о месте жительства.',  
+                    examples: ['**Որտեղ** **ես** **ապրում**: — Где ты живёшь?'] },  
+                { hy: '**Ես** **ապրում** **եմ** **Երևանում**', tr: 'Yes aprum em Yerevanum', ru: 'Я живу в Ереване', usage: 'Ответ.',  
+                    examples: ['**Ես** **ապրում** **եմ** **Երևանում**: — Я живу в Ереване.'] },  
+                { hy: '**Ի՞նչ** **ես** **սիրում**', tr: 'Inch es sirum?', ru: 'Что ты любишь?', usage: 'Вопрос об интересах.',  
+                    examples: ['**Ի՞նչ** **ես** **սիրում** **անել**: — Что ты любишь делать?'] },  
+                { hy: '**Ես** **սիրում** **եմ**', tr: 'Yes sirum em', ru: 'Я люблю', usage: 'Выражение предпочтения.',  
+                    examples: ['**Ես** **սիրում** **եմ** **կարդալ**: — Я люблю читать.'] },  
+                { hy: '**Ես** **չեմ** **սիրում**', tr: 'Yes chem sirum', ru: 'Я не люблю', usage: 'Выражение нелюбви.',  
+                    examples: ['**Ես** **չեմ** **սիրում** **սուտը**: — Я не люблю ложь.'] },  
+                { hy: '**Ամուսին**', tr: 'Amusin', ru: 'Муж (супруг)', usage: 'О семейном статусе.',  
+                    examples: ['**Սա** **իմ** **ամուսինն** **է**: — Это мой муж.'] },  
+                { hy: '**Կին**', tr: 'Kin', ru: 'Жена (супруга)', usage: 'О семейном статусе.',  
+                    examples: ['**Սա** **իմ** **կինն** **է**: — Это моя жена.'] },  
+                { hy: '**Երեխա**', tr: 'Yerekha', ru: 'Ребёнок', usage: 'О детях.', examples: ['**Մենք** **երեխա** **ունենք**: — У нас есть ребёнок.'] },  
+                { hy: '**Ընկեր**', tr: 'Ynker', ru: 'Друг', usage: 'О друзьях.', examples: ['**Սա** **իմ** **լավագույն** **ընկերն** **է**: — Это мой лучший друг.'] },  
+            ],  
+            grammar: {  
+                title: 'Представление',  
+                explanation: 'Для представления используй "**Իմ** **անունը** ... **է**". Вопрос "**Ինչ** **է** **քո** **անունը**?" — для неформального общения, "**Ինչ** **է** **Ձեր** **անունը**?" — для официального. Обрати внимание на форму "**Ձեր**" — вежливая форма "Ваш".'  
+            }  
+        }, {  
+            id: 'family',  
+            title: 'Семья',  
+            icon: '👨‍👩‍👧',  
+            words: [  
+                { hy: '**Ընտանիք**', tr: 'Yntanik', ru: 'Семья', usage: 'Основное слово о семье.',  
+                    examples: ['**Իմ** **ընտանիքը** **մեծ** **է**: — Моя семья большая.'] },  
+                { hy: '**Հայր**', tr: 'Hayr', ru: 'Отец', usage: 'Член семьи.', examples: ['**Իմ** **հայրը** **բժիշկ** **է**: — Мой отец врач.'] },  
+                { hy: '**Մայր**', tr: 'Mayr', ru: 'Мать', usage: 'Член семьи.', examples: ['**Իմ** **մայրը** **ուսուցիչ** **է**: — Моя мать учительница.'] },  
+                { hy: '**Եղբայր**', tr: 'Yeghbayr', ru: 'Брат', usage: 'Член семьи.', examples: ['**Ես** **ունեմ** **եղբայր**: — У меня есть брат.'] },  
+                { hy: '**Քույր**', tr: 'Kuyr', ru: 'Сестра', usage: 'Член семьи.', examples: ['**Քույրս** **գեղեցիկ** **է**: — Моя сестра красивая.'] },  
+                { hy: '**Տատ**', tr: 'Tat', ru: 'Бабушка', usage: 'Член семьи.', examples: ['**Տատս** **լավ** **է** **պատրաստում**: — Моя бабушка хорошо готовит.'] },  
+                { hy: '**Պապ**', tr: 'Pap', ru: 'Дедушка', usage: 'Член семьи.', examples: ['**Պապս** **պատմում** **է** **հետաքրքիր** **պատմություններ**: — Мой дедушка рассказывает интересные истории.'] },  
+                { hy: '**Որդի**', tr: 'Vordi', ru: 'Сын', usage: 'Член семьи.', examples: ['**Մեր** **որդին** **սովորում** **է** **դպրոցում**: — Наш сын учится в школе.'] },  
+                { hy: '**Դուստր**', tr: 'Dustr', ru: 'Дочь', usage: 'Член семьи.', examples: ['**Նրանք** **ունեն** **դուստր**: — У них есть дочь.'] },  
+                { hy: '**Ամուսին**', tr: 'Amusin', ru: 'Муж', usage: 'Супруг.', examples: ['**Սա** **իմ** **ամուսինն** **է**: — Это мой муж.'] },  
+                { hy: '**Կին**', tr: 'Kin', ru: 'Жена', usage: 'Супруга.', examples: ['**Սա** **իմ** **կինն** **է**: — Это моя жена.'] },  
+                { hy: '**Երեխա**', tr: 'Yerekha', ru: 'Ребёнок', usage: 'О детях.', examples: ['**Երեխաները** **խաղում** **են** **բակում**: — Дети играют во дворе.'] },  
+                { hy: '**Եղբայրներ**', tr: 'Yeghbayrner', ru: 'Братья (мн.ч.)', usage: 'Множественное число.',  
+                    examples: ['**Ես** **ունեմ** **երեք** **եղբայր**: — У меня три брата.'] },  
+                { hy: '**Քույրեր**', tr: 'Kuyrner', ru: 'Сёстры (мн.ч.)', usage: 'Множественное число.',  
+                    examples: ['**Քույրերս** **երկուսն** **են**: — У меня две сестры.'] },  
+                { hy: '**Ծնողներ**', tr: 'Tsnoghner', ru: 'Родители', usage: 'Отец и мать.', examples: ['**Ծնողներս** **աշխատում** **են**: — Мои родители работают.'] },  
+                { hy: '**Ազգական**', tr: 'Azgakan', ru: 'Родственник', usage: 'Общее слово.', examples: ['**Նա** **իմ** **ազգականն** **է**: — Он мой родственник.'] },  
+                { hy: '**Հարազատ**', tr: 'Harazat', ru: 'Близкий родственник', usage: 'Более близкий.',  
+                    examples: ['**Նրանք** **իմ** **հարազատներն** **են**: — Они мои близкие родственники.'] },  
+                { hy: '**Ընտանիքի** **անդամ**', tr: 'Yntaniki andam', ru: 'Член семьи', usage: 'Формальное выражение.',  
+                    examples: ['**Յուրաքանչյուր** **ընտանիքի** **անդամ** **կարեւոր** **է**: — Каждый член семьи важен.'] },  
+                { hy: '**Մեծ** **ընտանիք**', tr: 'Mets yntanik', ru: 'Большая семья', usage: 'Описывает размер.',  
+                    examples: ['**Նրանք** **մեծ** **ընտանիք** **ունեն**: — У них большая семья.'] },  
+                { hy: '**Փոքր** **ընտանիք**', tr: 'Pokr yntanik', ru: 'Маленькая семья', usage: 'Описывает размер.',  
+                    examples: ['**Մենք** **փոքր** **ընտանիք** **ենք**: — Мы маленькая семья.'] },  
+            ],  
+            grammar: {  
+                title: 'Семья и принадлежность',  
+                explanation: 'Для обозначения принадлежности используется суффикс "-**ս**" (мой/моя) или конструкция "**իմ** ...-**ը**". Например, "**հայրս**" — мой отец, "**իմ** **հայրը**" — мой отец (более формально).'  
+            }  
+        }, {  
+            id: 'numbers',  
+            title: 'Числа',  
+            icon: '🔢',  
+            words: [  
+                { hy: '**Մեկ**', tr: 'Mek', ru: 'Один', usage: 'Число 1.', examples: ['**Մեկ**, **երկու**, **երեք**: — Один, два, три.'] },  
+                { hy: '**Երկու**', tr: 'Yerku', ru: 'Два', usage: 'Число 2.', examples: ['**Երկու** **գիրք**: — Две книги.'] },  
+                { hy: '**Երեք**', tr: 'Yereq', ru: 'Три', usage: 'Число 3.', examples: ['**Երեք** **խնձոր**: — Три яблока.'] },  
+                { hy: '**Չորս**', tr: 'Chors', ru: 'Четыре', usage: 'Число 4.', examples: ['**Չորս** **աթոռ**: — Четыре стула.'] },  
+                { hy: '**Հինգ**', tr: 'Hing', ru: 'Пять', usage: 'Число 5.', examples: ['**Հինգ** **մատ**: — Пять пальцев.'] },  
+                { hy: '**Վեց**', tr: 'Vets', ru: 'Шесть', usage: 'Число 6.', examples: ['**Վեց** **ամիս**: — Шесть месяцев.'] },  
+                { hy: '**Յոթ**', tr: 'Yot', ru: 'Семь', usage: 'Число 7.', examples: ['**Յոթ** **օր**: — Семь дней.'] },  
+                { hy: '**Ութ**', tr: 'Ut', ru: 'Восемь', usage: 'Число 8.', examples: ['**Ութ** **աշակերտ**: — Восемь учеников.'] },  
+                { hy: '**Ինը**', tr: 'Iny', ru: 'Девять', usage: 'Число 9.', examples: ['**Ինը** **ժամ**: — Девять часов.'] },  
+                { hy: '**Տաս**', tr: 'Tas', ru: 'Десять', usage: 'Число 10.', examples: ['**Տաս** **մատ**: — Десять пальцев.'] },  
+                { hy: '**Տասնմեկ**', tr: 'Tasnmek', ru: 'Одиннадцать', usage: 'Число 11.', examples: ['**Տասնմեկ** **աշակերտ**: — Одиннадцать учеников.'] },  
+                { hy: '**Տասներկու**', tr: 'Tasnyerku', ru: 'Двенадцать', usage: 'Число 12.', examples: ['**Տասներկու** **ամիս**: — Двенадцать месяцев.'] },  
+                { hy: '**Քսան**', tr: 'Ksan', ru: 'Двадцать', usage: 'Число 20.', examples: ['**Քսան** **տարի**: — Двадцать лет.'] },  
+                { hy: '**Երեսուն**', tr: 'Yeresun', ru: 'Тридцать', usage: 'Число 30.', examples: ['**Երեսուն** **օր**: — Тридцать дней.'] },  
+                { hy: '**Հարյուր**', tr: 'Haryur', ru: 'Сто', usage: 'Число 100.', examples: ['**Հարյուր** **դրամ**: — Сто драм.'] },  
+                { hy: '**Հազար**', tr: 'Hazar', ru: 'Тысяча', usage: 'Число 1000.', examples: ['**Հազար** **տարի**: — Тысяча лет.'] },  
+                { hy: '**Միլիոն**', tr: 'Milion', ru: 'Миллион', usage: 'Число 1 000 000.',  
+                examples: ['**Միլիոն** **մարդ**: — Миллион человек.'] },  
+                { hy: '**Քանի՞**', tr: 'Kani?', ru: 'Сколько?', usage: 'Вопрос о количестве.',  
+                    examples: ['**Քանի՞** **գիրք** **ունես**: — Сколько у тебя книг?'] },  
+                { hy: '**Շատ**', tr: 'Shat', ru: 'Много', usage: 'Большое количество.', examples: ['**Շատ** **մարդ**: — Много людей.'] },  
+                { hy: '**Քիչ**', tr: 'Kich', ru: 'Мало', usage: 'Малое количество.', examples: ['**Քիչ** **ժամանակ**: — Мало времени.'] },  
+            ],  
+            grammar: {  
+                title: 'Числа и счёт',  
+                explanation: 'Числа в армянском языке согласуются с существительными в родительном падеже. Вопрос "**Քանի՞**" используется для спроса о количестве. Числительные от 1 до 10 — основа для всех остальных.'  
+            }  
+        }, {  
+            id: 'colors',  
+            title: 'Цвета',  
+            icon: '🎨',  
+            words: [  
+                { hy: '**Կարմիր**', tr: 'Karmir', ru: 'Красный', usage: 'Цвет.', examples: ['**Կարմիր** **ծաղիկ**: — Красный цветок.'] },  
+                { hy: '**Կապույտ**', tr: 'Kapuyt', ru: 'Голубой / синий', usage: 'Цвет.', examples: ['**Կապույտ** **երկինք**: — Голубое небо.'] },  
+                { hy: '**Կանաչ**', tr: 'Kanach', ru: 'Зелёный', usage: 'Цвет.', examples: ['**Կանաչ** **խոտ**: — Зелёная трава.'] },  
+                { hy: '**Դեղին**', tr: 'Deghin', ru: 'Жёлтый', usage: 'Цвет.', examples: ['**Դեղին** **արև**: — Жёлтое солнце.'] },  
+                { hy: '**Սպիտակ**', tr: 'Spitak', ru: 'Белый', usage: 'Цвет.', examples: ['**Սպիտակ** **ձյուն**: — Белый снег.'] },  
+                { hy: '**Սև**', tr: 'Sev', ru: 'Чёрный', usage: 'Цвет.', examples: ['**Սև** **գիշեր**: — Чёрная ночь.'] },  
+                { hy: '**Մոխրագույն**', tr: 'Mokhraguyn', ru: 'Серый', usage: 'Цвет.', examples: ['**Մոխրագույն** **ամպեր**: — Серые облака.'] },  
+                { hy: '**Շագանակագույն**', tr: 'Shaganakaguyn', ru: 'Коричневый', usage: 'Цвет.',  
+                    examples: ['**Շագանակագույն** **սեղան**: — Коричневый стол.'] },  
+                { hy: '**Նարնջագույն**', tr: 'Narnjaguyn', ru: 'Оранжевый', usage: 'Цвет.',  
+                    examples: ['**Նարնջագույն** **մրգեր**: — Оранжевые фрукты.'] },  
+                { hy: '**Վարդագույն**', tr: 'Vardaguyn', ru: 'Розовый', usage: 'Цвет.', examples: ['**Վարդագույն** **ծաղիկ**: — Розовый цветок.'] },  
+                { hy: '**Մանուշակագույն**', tr: 'Manushakaguyn', ru: 'Фиолетовый', usage: 'Цвет.',  
+                    examples: ['**Մանուշակագույն** **երեկո**: — Фиолетовый вечер.'] },  
+                { hy: '**Ոսկեգույն**', tr: 'Voskeguyn', ru: 'Золотой', usage: 'Цвет.', examples: ['**Ոսկեգույն** **մատանի**: — Золотое кольцо.'] },  
+                { hy: '**Արծաթագույն**', tr: 'Arthataguyn', ru: 'Серебряный', usage: 'Цвет.',  
+                    examples: ['**Արծաթագույն** **գդալ**: — Серебряная ложка.'] },  
+                { hy: '**Բաց** **կապույտ**', tr: 'Bats kapuyt', ru: 'Светло-голубой', usage: 'Оттенок.',  
+                    examples: ['**Բաց** **կապույտ** **երկինք**: — Светло-голубое небо.'] },  
+                { hy: '**Մուգ** **կանաչ**', tr: 'Mug kanach', ru: 'Тёмно-зелёный', usage: 'Оттенок.',  
+                    examples: ['**Մուգ** **կանաչ** **անտառ**: — Тёмно-зелёный лес.'] },  
+                { hy: '**Գույն**', tr: 'Guyn', ru: 'Цвет', usage: 'Общее слово для цвета.',  
+                    examples: ['**Ինչ** **գույն** **է** **սա**: — Какого цвета это?'] },  
+                { hy: '**Ի՞նչ** **գույն**', tr: 'Inch guyn?', ru: 'Какого цвета?', usage: 'Вопрос о цвете.',  
+                    examples: ['**Ի՞նչ** **գույն** **է** **մեքենան**: — Какого цвета машина?'] },  
+                { hy: '**Վառ**', tr: 'Var', ru: 'Яркий', usage: 'Описание цвета.', examples: ['**Վառ** **գույներ**: — Яркие цвета.'] },  
+                { hy: '**Գունավոր**', tr: 'Gunavor', ru: 'Цветной', usage: 'Описание.', examples: ['**Գունավոր** **նկար**: — Цветная картина.'] },  
+                { hy: '**Անգույն**', tr: 'Anguyn', ru: 'Бесцветный', usage: 'Описание.', examples: ['**Անգույն** **հեղուկ**: — Бесцветная жидкость.'] },  
+            ],  
+            grammar: {  
+                title: 'Цвета и прилагательные',  
+                explanation: 'В армянском языке прилагательные (в т.ч. цвета) согласуются с существительными в числе, но не в роде (рода в армянском нет). Прилагательное ставится перед существительным.'  
+            }  
+        }, {  
+            id: 'food',  
+            title: 'Еда',  
+            icon: '🍽️',  
+            words: [  
+                { hy: '**Ուտել**', tr: 'Utel', ru: 'Есть (кушать)', usage: 'Глагол приёма пищи.',  
+                    examples: ['**Ես** **ուզում** **եմ** **ուտել**: — Я хочу есть.'] },  
+                { hy: '**Խմել**', tr: 'Khmel', ru: 'Пить', usage: 'Глагол приёма жидкости.',  
+                    examples: ['**Ես** **ուզում** **եմ** **ջուր** **խմել**: — Я хочу пить воду.'] },  
+                { hy: '**Հաց**', tr: 'Hats', ru: 'Хлеб', usage: 'Основной продукт.', examples: ['**Հաց** **ու** **կարագ**: — Хлеб с маслом.'] },  
+                { hy: '**Ջուր**', tr: 'Jur', ru: 'Вода', usage: 'Питьё.', examples: ['**Խնդրում** **եմ**, **ջուր**: — Пожалуйста, воду.'] },  
+                { hy: '**Միս**', tr: 'Mis', ru: 'Мясо', usage: 'Продукт.', examples: ['**Ես** **միս** **չեմ** **ուտում**: — Я не ем мясо.'] },  
+                { hy: '**Բանջարեղեն**', tr: 'Banjareghen', ru: 'Овощи', usage: 'Продукты.', examples: ['**Թարմ** **բանջարեղեն**: — Свежие овощи.'] },  
+                { hy: '**Մրգեր**', tr: 'Mrger', ru: 'Фрукты', usage: 'Продукты.', examples: ['**Ամառային** **մրգեր**: — Летние фрукты.'] },  
+                { hy: '**Խնձոր**', tr: 'Khndzor', ru: 'Яблоко', usage: 'Фрукт.', examples: ['**Կարմիր** **խնձոր**: — Красное яблоко.'] },  
+                { hy: '**Տանձ**', tr: 'Tandz', ru: 'Груша', usage: 'Фрукт.', examples: ['**Քաղցր** **տանձ**: — Сладкая груша.'] },  
+                { hy: '**Բալ**', tr: 'Bal', ru: 'Вишня', usage: 'Фрукт / ягода.', examples: ['**Թթու** **բալ**: — Кислая вишня.'] },  
+                { hy: '**Ձուկ**', tr: 'Dzuk', ru: 'Рыба', usage: 'Продукт.', examples: ['**Ես** **ձուկ** **եմ** **սիրում**: — Я люблю рыбу.'] },  
+                { hy: '**Պանիր**', tr: 'Panir', ru: 'Сыр', usage: 'Молочный продукт.', examples: ['**Հայկական** **պանիր**: — Армянский сыр.'] },  
+                { hy: '**Ձու**', tr: 'Dzu', ru: 'Яйцо', usage: 'Продукт.', examples: ['**Եփած** **ձու**: — Варёное яйцо.'] },  
+                { hy: '**Կաթ**', tr: 'Kat', ru: 'Молоко', usage: 'Питьё.', examples: ['**Կաթով** **սուրճ**: — Кофе с молоком.'] },  
+                { hy: '**Սուրճ**', tr: 'Surj', ru: 'Кофе', usage: 'Напиток.', examples: ['**Առավոտյան** **սուրճ**: — Утренний кофе.'] },  
+                { hy: '**Թեյ**', tr: 'Tey', ru: 'Чай', usage: 'Напиток.', examples: ['**Կանաչ** **թեյ**: — Зелёный чай.'] },  
+                { hy: '**Աղ**', tr: 'Agh', ru: 'Соль', usage: 'Приправа.', examples: ['**Աղ** **ավելացրու**: — Добавь соль.'] },  
+                { hy: '**Շաքար**', tr: 'Shakar', ru: 'Сахар', usage: 'Приправа.', examples: ['**Շաքարով** **թեյ**: — Чай с сахаром.'] },  
+                { hy: '**Կերակուր**', tr: 'Kerakur', ru: 'Еда (блюдо)', usage: 'Общее слово для еды.',  
+                    examples: ['**Համեղ** **կերակուր**: — Вкусное блюдо.'] },  
+                { hy: '**Ախորժակ**', tr: 'Akhorzhak', ru: 'Аппетит', usage: 'Желание есть.',  
+                    examples: ['**Բարի** **ախորժակ**: — Приятного аппетита.'] },  
+            ],  
+            grammar: {  
+                title: 'Еда и глаголы',  
+                explanation: 'Глаголы "**ուտել**" (есть) и "**խմել**" (пить) спрягаются по лицам. В армянском языке нет категории рода, поэтому прилагательные не изменяются по роду. Для вежливого предложения используют "**Խնդրում** **եմ**" (пожалуйста).'  
+            }  
+        }, {  
+            id: 'shop',  
+            title: 'Магазин',  
+            icon: '🛍️',  
+            words: [  
+                { hy: '**Խանութ**', tr: 'Khanut', ru: 'Магазин', usage: 'Место покупок.',  
+                    examples: ['**Ես** **գնում** **եմ** **խանութ**: — Я иду в магазин.'] },  
+                { hy: '**Գնել**', tr: 'Gnel', ru: 'Покупать', usage: 'Глагол покупки.', examples: ['**Ես** **ուզում** **եմ** **գնել**: — Я хочу купить.'] },  
+                { hy: '**Վաճառել**', tr: 'Vacharel', ru: 'Продавать', usage: 'Глагол продажи.',  
+                    examples: ['**Նրանք** **վաճառում** **են** **մրգեր**: — Они продают фрукты.'] },  
+                { hy: '**Գին**', tr: 'Gin', ru: 'Цена', usage: 'Стоимость товара.', examples: ['**Ինչ** **է** **գինը**: — Какая цена?'] },  
+                { hy: '**Թանկ**', tr: 'Tank', ru: 'Дорогой', usage: 'О цене.', examples: ['**Սա** **շատ** **թանկ** **է**: — Это очень дорого.'] },  
+                { hy: '**Էժան**', tr: 'Ezhan', ru: 'Дёшевый', usage: 'О цене.', examples: ['**Սա** **էժան** **է**: — Это дёшево.'] },  
+                { hy: '**Փող**', tr: 'Pogh', ru: 'Деньги', usage: 'Средство оплаты.', examples: ['**Ես** **փող** **չունեմ**: — У меня нет денег.'] },  
+                { hy: '**Դրամ**', tr: 'Dram', ru: 'Драм (валюта Армении)', usage: 'Валюта.',  
+                    examples: ['**Քանի՞** **դրամ**: — Сколько драм?'] },  
+                { hy: '**Վճարել**', tr: 'Vchar'el', ru: 'Платить', usage: 'Оплата.', examples: ['**Ես** **պետք** **է** **վճարեմ**: — Я должен заплатить.'] },  
+                { hy: '**Ապրանք**', tr: 'Aranq', ru: 'Товар', usage: 'То, что продаётся.',  
+                    examples: ['**Որակյալ** **ապրանքներ**: — Качественные товары.'] },  
+                { hy: '**Զեղչ**', tr: 'Zekhch', ru: 'Скидка', usage: 'Снижение цены.', examples: ['**Զեղչ** **կա՞**: — Есть скидка?'] },  
+                { hy: '**Չափս**', tr: 'Chap's', ru: 'Размер', usage: 'Размер одежды/обуви.',  
+                    examples: ['**Ինչ** **չափս** **եք** **կրում**: — Какой размер вы носите?'] },  
+                { hy: '**Գույն**', tr: 'Guyn', ru: 'Цвет', usage: 'Цвет товара.', examples: ['**Այս** **գույնը** **ինձ** **դուր** **է** **գալիս**: — Мне нравится этот цвет.'] },  
+                { hy: '**Նոր**', tr: 'Nor', ru: 'Новый', usage: 'Описание товара.', examples: ['**Նոր** **հեռախոս**: — Новый телефон.'] },  
+                { hy: '**Հին**', tr: 'Hin', ru: 'Старый', usage: 'Описание товара.', examples: ['**Հին** **տուն**: — Старый дом.'] },  
+                { hy: '**Գնորդ**', tr: 'Gnord', ru: 'Покупатель', usage: 'Человек, который покупает.',  
+                    examples: ['**Գնորդը** **գոհ** **է**: — Покупатель доволен.'] },  
+                { hy: '**Վաճառող**', tr: 'Vacharogh', ru: 'Продавец', usage: 'Человек, который продаёт.',  
+                    examples: ['**Վաճառողը** **օգնեց** **ինձ**: — Продавец помог мне.'] },  
+                { hy: '**Դրամարկղ**', tr: 'Dramarkgh', ru: 'Касса', usage: 'Место оплаты.',  
+                    examples: ['**Վճարեք** **դրամարկղում**: — Оплатите в кассе.'] },  
+                { hy: '**Տոպրակ**', tr: 'Toprak', ru: 'Пакет', usage: 'Для покупок.', examples: ['**Տոպրակ** **պետք** **է**: — Нужен пакет.'] },  
+                { hy: '**Առք**', tr: 'Arrk', ru: 'Покупка (действие)', usage: 'Процесс покупки.',  
+                    examples: ['**Հաջող** **առք**: — Удачной покупки.'] },  
+            ],  
+            grammar: {  
+                title: 'В магазине',  
+                explanation: 'Для вопроса о цене используй "**Ինչ** **է** **գինը**?" или "**Քանի՞** **դրամ**": Для вежливого обращения к продавцу — "**Ներեցեք**" (извините). Глагол "**գնել**" (покупать) — один из самых употребительных.'  
+            }  
+        }, {  
+            id: 'restaurant',  
+            title: 'Ресторан',  
+            icon: '🍴',  
+            words: [  
+                { hy: '**Ռեստորան**', tr: 'Restoran', ru: 'Ресторан', usage: 'Место для еды.',  
+                    examples: ['**Եկեք** **գնանք** **ռեստորան**: — Пойдём в ресторан.'] },  
+                { hy: '**Մենյու**', tr: 'Menyu', ru: 'Меню', usage: 'Список блюд.', examples: ['**Կարող** **եմ** **տեսնել** **մենյուն**: — Можно посмотреть меню?'] },  
+                { hy: '**Պատվիրել**', tr: 'Patvirel', ru: 'Заказывать', usage: 'Действие в ресторане.',  
+                    examples: ['**Ես** **ուզում** **եմ** **պատվիրել**: — Я хочу заказать.'] },  
+                { hy: '**Մատուցող**', tr: 'Matutsogh', ru: 'Официант', usage: 'Персонал ресторана.',  
+                    examples: ['**Մատուցող**, **կարող** **եք** **օգնել**: — Официант, вы можете помочь?'] },  
+                { hy: '**Սեղան**', tr: 'Seghan', ru: 'Стол', usage: 'Мебель в ресторане.',  
+                    examples: ['**Մեզ** **համար** **սեղան** **կա՞**: — Есть ли для нас столик?'] },  
+                { hy: '**Ճաշ**', tr: 'Chash', ru: 'Обед', usage: 'Приём пищи днём.', examples: ['**Ճաշը** **համեղ** **էր**: — Обед был вкусным.'] },  
+                { hy: '**Ընթրիք**', tr: 'Yntrik', ru: 'Ужин', usage: 'Вечерний приём пищи.',  
+                    examples: ['**Ընթրիքը** **պատրաստ** **է**: — Ужин готов.'] },  
+                { hy: '**Նախուտեստ**', tr: 'Nakhtest', ru: 'Закуска', usage: 'Первое блюдо.',  
+                    examples: ['**Նախուտեստը** **շատ** **համեղ** **էր**: — Закуска была очень вкусной.'] },  
+                { hy: '**Ապուր**', tr: 'A pur', ru: 'Суп', usage: 'Первое блюдо.', examples: ['**Տաք** **ապուր**: — Горячий суп.'] },  
+                { hy: '**Աղցան**', tr: 'Aghtsan', ru: 'Салат', usage: 'Холодное блюдо.', examples: ['**Թարմ** **աղցան**: — Свежий салат.'] },  
+                { hy: '**Ձկան** **ուտեստ**', tr: 'Dzkan utest', ru: 'Рыбное блюдо', usage: 'Блюдо из рыбы.',  
+                    examples: ['**Ձկան** **ուտեստը** **հիանալի** **էր**: — Рыбное блюдо было отличным.'] },  
+                { hy: '**Մսային** **ուտեստ**', tr: 'Msayin utest', ru: 'Мясное блюдо', usage: 'Блюдо из мяса.',  
+                    examples: ['**Մսային** **ուտեստ** **պատվիրեցինք**: — Мы заказали мясное блюдо.'] },  
+                { hy: '**Աղանդեր**', tr: 'Aghander', ru: 'Десерт', usage: 'Сладкое блюдо.',  
+                    examples: ['**Աղանդերը** **համեղ** **էր**: — Десерт был вкусным.'] },  
+                { hy: '**Հաշիվ**', tr: 'Hashiv', ru: 'Счёт', usage: 'Оплата в ресторане.',  
+                    examples: ['**Կարող** **եմ** **հաշիվը** **բերել**: — Можно принести счёт?'] },  
+                { hy: '**Թեյավճար**', tr: 'Teyavchar', ru: 'Чаевые', usage: 'Дополнительная оплата.',  
+                    examples: ['**Թեյավճարը** **ներառված** **է**: — Чаевые включены.'] },  
+                { hy: '**Համեղ**', tr: 'Hamegh', ru: 'Вкусный', usage: 'Описание еды.', examples: ['**Սա** **շատ** **համեղ** **է**: — Это очень вкусно.'] },  
+                { hy: '**Անհամ**', tr: 'Anham', ru: 'Невкусный', usage: 'Описание еды.',  
+                    examples: ['**Այս** **ուտեստը** **անհամ** **է**: — Это блюдо невкусное.'] },  
+                { hy: '**Բավական** **է**', tr: 'Bavakan e', ru: 'Достаточно', usage: 'Хватит, достаточно.',  
+                    examples: ['**Բավական** **է**, **շնորհակալություն**: — Достаточно, спасибо.'] },  
+                { hy: '**Առողջություն**', tr: 'Aroghjutyun', ru: 'Будьте здоровы (тост)', usage: 'Тост.',  
+                    examples: ['**Առողջություն** **բոլորին**: — Будьте здоровы, всем.'] },  
+                { hy: '**Բարի** **ախորժակ**', tr: 'Bari akhorzhak', ru: 'Приятного аппетита', usage: 'Пожелание перед едой.',  
+                    examples: ['**Բարի** **ախորժակ**: — Приятного аппетита.'] },  
+            ],  
+            grammar: {  
+                title: 'В ресторане',  
+                explanation: 'Для заказа используй "**Ես** **ուզում** **եմ** ..." (я хочу ...) или "**Կարող** **եմ** ..." (можно ...). Вежливая форма вопроса — "**Կարող** **եք** ..." (можно ...?). "**Համեղ**" — вкусный, "**անհամ**" — невкусный.'  
+            }  
+        }, {  
+            id: 'transport',  
+            title: 'Транспорт',  
+            icon: '🚗',  
+            words: [  
+                { hy: '**Տրանսպորտ**', tr: 'Transport', ru: 'Транспорт', usage: 'Общее слово.',  
+                    examples: ['**Հասարակական** **տրանսպորտ**: — Общественный транспорт.'] },  
+                { hy: '**Մեքենա**', tr: 'Mekena', ru: 'Машина / автомобиль', usage: 'Средство передвижения.',  
+                    examples: ['**Նոր** **մեքենա**: — Новая машина.'] },  
+                { hy: '**Ավտոբուս**', tr: 'Avtobus', ru: 'Автобус', usage: 'Общественный транспорт.',  
+                    examples: ['**Ավտոբուսը** **ուշացավ**: — Автобус опоздал.'] },  
+                { hy: '**Գնացք**', tr: 'Gnatspq', ru: 'Поезд', usage: 'Ж/д транспорт.', examples: ['**Գնացքը** **արագ** **է**: — Поезд быстрый.'] },  
+                { hy: '**Ինքնաթիռ**', tr: 'Inknatir', ru: 'Самолёт', usage: 'Воздушный транспорт.',  
+                    examples: ['**Ինքնաթիռը** **թռչում** **է**: — Самолёт летит.'] },  
+                { hy: '**Նավ**', tr: 'Nav', ru: 'Корабль / судно', usage: 'Водный транспорт.',  
+                    examples: ['**Նավը** **ծովում** **է**: — Корабль в море.'] },  
+                { hy: '**Մետրո**', tr: 'Metro', ru: 'Метро', usage: 'Подземный транспорт.',  
+                    examples: ['**Մետրոյով** **գնամ**: — Поеду на метро.'] },  
+                { hy: '**Տաքսի**', tr: 'Taksi', ru: 'Такси', usage: 'Частный транспорт.', examples: ['**Տաքսի** **կանչեմ**: — Вызову такси.'] },  
+                { hy: '**Հեծանիվ**', tr: 'Hetsaniv', ru: 'Велосипед', usage: 'Двухколёсный транспорт.',  
+                    examples: ['**Հեծանիվով** **զբոսնել**: — Прогулка на велосипеде.'] },  
+                { hy: '**Վարել**', tr: 'Varel', ru: 'Водить (транспорт)', usage: 'Управление.',  
+                    examples: ['**Ես** **կարող** **եմ** **մեքենա** **վարել**: — Я могу водить машину.'] },  
+                { hy: '**Կանգառ**', tr: 'Kangarr', ru: 'Остановка', usage: 'Место остановки.',  
+                    examples: ['**Հաջորդ** **կանգառը**: — Следующая остановка.'] },  
+                { hy: '**Տոմս**', tr: 'Toms', ru: 'Билет', usage: 'Проездной документ.',  
+                    examples: ['**Տոմս** **գնել**: — Купить билет.'] },  
+                { hy: '**Ուղևոր**', tr: 'Ughevor', ru: 'Пассажир', usage: 'Человек в транспорте.',  
+                    examples: ['**Ուղևորները** **սպասում** **են**: — Пассажиры ждут.'] },  
+                { hy: '**Վարորդ**', tr: 'Varord', ru: 'Водитель', usage: 'Управляющий транспортом.',  
+                    examples: ['**Վարորդը** **բարի** **է**: — Водитель добрый.'] },  
+                { hy: '**Ճանապարհ**', tr: 'Chanaparh', ru: 'Дорога', usage: 'Путь, трасса.',  
+                    examples: ['**Ճանապարհը** **երկար** **է**: — Дорога длинная.'] },  
+                { hy: '**Քշել**', tr: 'Kshel', ru: 'Ехать / гнать', usage: 'Движение.', examples: ['**Մենք** **արագ** **ենք** **քշում**: — Мы быстро едем.'] },  
+                { hy: '**Գնալ**', tr: 'Gnal', ru: 'Идти / ехать', usage: 'Движение.',  
+                    examples: ['**Ես** **գնում** **եմ** **տուն**: — Я иду домой.'] },  
+                { hy: '**Գալ**', tr: 'Gal', ru: 'Приходить / приезжать', usage: 'Движение к говорящему.',  
+                    examples: ['**Նա** **գալիս** **է**: — Он приходит.'] },  
+                { hy: '**Ուշանալ**', tr: 'Ushanal', ru: 'Опоздать', usage: 'Задержка.',  
+                    examples: ['**Ես** **ուշացա**: — Я опоздал.'] },  
+                { hy: '**Ժամանակ**', tr: 'Zhamanak', ru: 'Время', usage: 'Временной промежуток.',  
+                    examples: ['**Ժամանակը** **քիչ** **է**: — Времени мало.'] },  
+            ],  
+            grammar: {  
+                title: 'Транспорт и передвижение',  
+                explanation: 'Глаголы движения: "**գնալ**" — идти/ехать (от себя), "**գալ**" — приходить/приезжать (к себе). Для указания направления используется суффикс "-**ով**" (на ...): "**մետրոյով**" — на метро, "**ավտոբուսով**" — на автобусе.'  
+            }  
+        }, {  
+            id: 'home',  
+            title: 'Дом',  
+            icon: '🏠',  
+            words: [  
+                { hy: '**Տուն**', tr: 'Tun', ru: 'Дом', usage: 'Место жительства.', examples: ['**Իմ** **տունը** **մեծ** **է**: — Мой дом большой.'] },  
+                { hy: '**Բնակարան**', tr: 'Bnakaran', ru: 'Квартира', usage: 'Жильё в многоквартирном доме.',  
+                    examples: ['**Նոր** **բնակարան**: — Новая квартира.'] },  
+                { hy: '**Սենյակ**', tr: 'Senyak', ru: 'Комната', usage: 'Часть дома.', examples: ['**Իմ** **սենյակը** **հարմարավետ** **է**: — Моя комната уютная.'] },  
+                { hy: '**Խոհանոց**', tr: 'Khohanots', ru: 'Кухня', usage: 'Помещение для готовки.',  
+                    examples: ['**Խոհանոցը** **մաքուր** **է**: — Кухня чистая.'] },  
+                { hy: '**Ննջասենյակ**', tr: 'Nnjasenyak', ru: 'Спальня', usage: 'Комната для сна.',  
+                    examples: ['**Ննջասենյակը** **հանգիստ** **է**: — Спальня тихая.'] },  
+                { hy: '**Լոգարան**', tr: 'Logaran', ru: 'Ванная комната', usage: 'Помещение для гигиены.',  
+                    examples: ['**Լոգարանը** **մաքուր** **է**: — Ванная чистая.'] },  
+                { hy: '**Հյուրասենյակ**', tr: 'Hyurasenyak', ru: 'Гостиная', usage: 'Комната для приёма гостей.',  
+                    examples: ['**Հյուրասենյակը** **ընդարձակ** **է**: — Гостиная просторная.'] },  
+                { hy: '**Պատ**', tr: 'Pat', ru: 'Стена', usage: 'Часть конструкции.', examples: ['**Պատը** **սպիտակ** **է**: — Стена белая.'] },  
+                { hy: '**Հատակ**', tr: 'Hatak', ru: 'Пол', usage: 'Нижняя поверхность.', examples: ['**Հատակը** **փայտյա** **է**: — Пол деревянный.'] },  
+                { hy: '**Առաստաղ**', tr: 'Arrastagh', ru: 'Потолок', usage: 'Верхняя поверхность.',  
+                    examples: ['**Առաստաղը** **բարձր** **է**: — Потолок высокий.'] },  
+                { hy: '**Դուռ**', tr: 'Dur', ru: 'Дверь', usage: 'Вход/выход.', examples: ['**Դուռը** **բաց** **է**: — Дверь открыта.'] },  
+                { hy: '**Պատուհան**', tr: 'Patuhan', ru: 'Окно', usage: 'Световой проём.',  
+                    examples: ['**Պատուհանը** **մեծ** **է**: — Окно большое.'] },  
+                { hy: '**Սեղան**', tr: 'Seghan', ru: 'Стол', usage: 'Мебель.', examples: ['**Սեղանի** **վրա** **գիրք** **է**: — На столе книга.'] },  
+                { hy: '**Աթոռ**', tr: 'Atorr', ru: 'Стул', usage: 'Мебель.', examples: ['**Աթոռը** **հարմարավետ** **է**: — Стул удобный.'] },  
+                { hy: '**Մահճակալ**', tr: 'Mahchakal', ru: 'Кровать', usage: 'Мебель для сна.',  
+                    examples: ['**Մահճակալը** **փափուկ** **է**: — Кровать мягкая.'] },  
+                { hy: '**Զգեստապահարան**', tr: 'Zgestapaharan', ru: 'Шкаф', usage: 'Для одежды.',  
+                    examples: ['**Զգեստապահարանը** **մեծ** **է**: — Шкаф большой.'] },  
+                { hy: '**Գրադարակ**', tr: 'Gradarak', ru: 'Книжная полка', usage: 'Для книг.',  
+                    examples: ['**Գրադարակը** **լիքն** **է**: — Книжная полка полна.'] },  
+                { hy: '**Ջեռուցում**', tr: 'Jerutsum', ru: 'Отопление', usage: 'Обогрев дома.',  
+                    examples: ['**Ջեռուցումը** **աշխատում** **է**: — Отопление работает.'] },  
+                { hy: '**Էլեկտրականություն**', tr: 'Elektrakanutyun', ru: 'Электричество', usage: 'Энергия.',  
+                    examples: ['**Էլեկտրականությունը** **կա**: — Электричество есть.'] },  
+                { hy: '**Հարմարավետ**', tr: 'Harmaravet', ru: 'Уютный', usage: 'Описание дома.',  
+                    examples: ['**Տունը** **շատ** **հարմարավետ** **է**: — Дом очень уютный.'] },  
+            ],  
+            grammar: {  
+                title: 'Дом и предметы',  
+                explanation: 'Для описания дома используй прилагательные: "**մեծ**" (большой), "**փոքր**" (маленький), "**հարմարավետ**" (уютный), "**մաքուր**" (чистый). Мебель и предметы — существительные, которые сочетаются с глаголом "**է**" (есть).'  
+            }  
+        }, {  
+            id: 'work',  
+            title: 'Работа',  
+            icon: '💼',  
+            words: [  
+                { hy: '**Աշխատանք**', tr: 'Ashkhatank', ru: 'Работа', usage: 'Занятость, труд.',  
+                    examples: ['**Ես** **աշխատանք** **ունեմ**: — У меня есть работа.'] },  
+                { hy: '**Աշխատել**', tr: 'Ashkhatel', ru: 'Работать', usage: 'Глагол трудовой деятельности.',  
+                    examples: ['**Ես** **աշխատում** **եմ** **գրասենյակում**: — Я работаю в офисе.'] },  
+                { hy: '**Գրասենյակ**', tr: 'Grasenyak', ru: 'Офис', usage: 'Место работы.',  
+                    examples: ['**Գրասենյակը** **մեծ** **է**: — Офис большой.'] },  
+                { hy: '**Շեֆ**', tr: 'Shef', ru: 'Начальник', usage: 'Руководитель.',  
+                    examples: ['**Շեֆս** **բարի** **է**: — Мой начальник добрый.'] },  
+                { hy: '**Գործընկեր**', tr: 'Gortsynker', ru: 'Коллега', usage: 'Сослуживец.',  
+                    examples: ['**Իմ** **գործընկերները** **օգնում** **են**: — Мои коллеги помогают.'] },  
+                { hy: '**Ժամանակացույց**', tr: 'Zhamanakatsuyts', ru: 'Расписание', usage: 'График работы.',  
+                    examples: ['**Ժամանակացույցը** **փոխվեց**: — Расписание изменилось.'] },  
+                { hy: '**Պաշտոն**', tr: 'Pashton', ru: 'Должность', usage: 'Профессиональная роль.',  
+                    examples: ['**Նա** **բարձր** **պաշտոն** **ունի**: — У него высокая должность.'] },  
+                { hy: '**Գործ**', tr: 'Gorts', ru: 'Дело / работа', usage: 'Задача, дело.',  
+                    examples: ['**Ես** **շատ** **գործ** **ունեմ**: — У меня много дел.'] },  
+                { hy: '**Հանդիպում**', tr: 'Handipum', ru: 'Встреча', usage: 'Деловая встреча.',  
+                    examples: ['**Հանդիպումը** **ժամը** **տասին** **է**: — Встреча в десять.'] },  
+                { hy: '**Նախագիծ**', tr: 'Nakhagits', ru: 'Проект', usage: 'План работы.',  
+                    examples: ['**Նախագիծը** **հաջող** **էր**: — Проект был успешным.'] },  
+                { hy: '**Վերջնաժամկետ**', tr: 'Verjnazhamket', ru: 'Дедлайн', usage: 'Крайний срок.',  
+                    examples: ['**Վերջնաժամկետը** **մոտ** **է**: — Дедлайн близок.'] },  
+                { hy: '**Աշխատավարձ**', tr: 'Ashkhatavardz', ru: 'Зарплата', usage: 'Оплата труда.',  
+                    examples: ['**Աշխատավարձը** **բարձր** **է**: — Зарплата высокая.'] },  
+                { hy: '**Բոնուս**', tr: 'Bonus', ru: 'Бонус / премия', usage: 'Дополнительное вознаграждение.',  
+                    examples: ['**Բոնուս** **ստացա**: — Я получил бонус.'] },  
+                { hy: '**Արձակուրդ**', tr: 'Ardzakurd', ru: 'Отпуск', usage: 'Время отдыха.',  
+                    examples: ['**Արձակուրդս** **ամռանն** **է**: — Мой отпуск летом.'] },  
+                { hy: '**Հանգիստ**', tr: 'Hangist', ru: 'Отдых', usage: 'Перерыв в работе.',  
+                    examples: ['**Հանգստի** **ժամանակ**: — Время отдыха.'] },  
+                { hy: '**Զբաղված**', tr: 'Zbaghts', ru: 'Занятый', usage: 'Состояние занятости.',  
+                    examples: ['**Ես** **զբաղված** **եմ**: — Я занят.'] },  
+                { hy: '**Կարիերա**', tr: 'Kariera', ru: 'Карьера', usage: 'Профессиональный путь.',  
+                    examples: ['**Նա** **լավ** **կարիերա** **ունի**: — У него хорошая карьера.'] },  
+                { hy: '**Մասնագետ**', tr: 'Masnaget', ru: 'Специалист', usage: 'Эксперт в области.',  
+                    examples: ['**Նա** **մասնագետ** **է**: — Он специалист.'] },  
+                { hy: '**Վարպետ**', tr: 'Varpet', ru: 'Мастер', usage: 'Опытный работник.',  
+                    examples: ['**Նա** **իր** **գործի** **վարպետ** **է**: — Он мастер своего дела.'] },  
+                { hy: '**Հաջողություն**', tr: 'Hajoghutyun', ru: 'Успех (в работе)', usage: 'Пожелание успеха.',  
+                    examples: ['**Մաղթում** **եմ** **հաջողություն**: — Желаю успеха.'] },  
+            ],  
+            grammar: {  
+                title: 'Работа и профессии',  
+                explanation: 'Глагол "**աշխատել**" (работать) спрягается: **ես** **աշխատում** **եմ** (я работаю), **դու** **աշխատում** **ես** (ты работаешь). Для указания места работы используется суффикс "-**ում**" (в ...): "**գրասենյակում**" (в офисе).'  
+            }  
+        }, {  
+            id: 'travel',  
+            title: 'Путешествия',  
+            icon: '✈️',  
+            words: [  
+                { hy: '**Ճանապարհորդություն**', tr: 'Chanaparhordutyun', ru: 'Путешествие', usage: 'Поездка, тур.',  
+                    examples: ['**Ես** **սիրում** **եմ** **ճանապարհորդել**: — Я люблю путешествовать.'] },  
+                { hy: '**Ճանապարհորդել**', tr: 'Chanaparhordel', ru: 'Путешествовать', usage: 'Глагол.',  
+                    examples: ['**Մենք** **ճանապարհորդում** **ենք**: — Мы путешествуем.'] },  
+                { hy: '**Տուրիզմ**', tr: 'Turizm', ru: 'Туризм', usage: 'Сфера путешествий.',  
+                    examples: ['**Տուրիզմը** **զարգացած** **է**: — Туризм развит.'] },  
+                { hy: '**Հյուրանոց**', tr: 'Hyuranots', ru: 'Отель', usage: 'Место для проживания.',  
+                    examples: ['**Հյուրանոցը** **հարմարավետ** **է**: — Отель уютный.'] },  
+                { hy: '**Սենյակ**', tr: 'Senyak', ru: 'Номер (в отеле)', usage: 'Комната в отеле.',  
+                    examples: ['**Ես** **սենյակ** **եմ** **պատվիրել**: — Я заказал номер.'] },  
+                { hy: '**Տոմս**', tr: 'Toms', ru: 'Билет', usage: 'Проездной документ.',  
+                    examples: ['**Տոմս** **գնել** **եմ**: — Я купил билет.'] },  
+                { hy: '**Անձնագիր**', tr: 'Andznagir', ru: 'Паспорт', usage: 'Документ для поездок.',  
+                    examples: ['**Անձնագիրս** **հետս** **է**: — Мой паспорт при мне.'] },  
+                { hy: '**Վիզա**', tr: 'Viza', ru: 'Виза', usage: 'Разрешение на въезд.',  
+                    examples: ['**Վիզա** **պետք** **է**: — Нужна виза.'] },  
+                { hy: '**Օդանավակայան**', tr: 'Odanavakayan', ru: 'Аэропорт', usage: 'Место для самолётов.',  
+                    examples: ['**Օդանավակայանում** **եմ**: — Я в аэропорту.'] },  
+                { hy: '**Գնացքի** **կայարան**', tr: 'Gnatspki kayaran', ru: 'Ж/д вокзал', usage: 'Место для поездов.',  
+                    examples: ['**Գնացքի** **կայարանում**: — На вокзале.'] },  
+                { hy: '**Ուղեբեռ**', tr: 'Ugheberr', ru: 'Багаж', usage: 'Вещи в поездке.',  
+                    examples: ['**Ուղեբեռս** **ծանր** **է**: — Мой багаж тяжёлый.'] },  
+                { hy: '**Մաքսատուն**', tr: 'Mak satun', ru: 'Таможня', usage: 'Пограничный контроль.',  
+                    examples: ['**Մաքսատունը** **անցանք**: — Мы прошли таможню.'] },  
+                { hy: '**Մեկնել**', tr: 'Meknel', ru: 'Отправляться', usage: 'Начало поездки.',  
+                    examples: ['**Մենք** **մեկնում** **ենք** **վաղը**: — Мы отправляемся завтра.'] },  
+                { hy: '**Ժամանել**', tr: 'Zhamanel', ru: 'Прибывать', usage: 'Конец поездки.',  
+                    examples: ['**Մենք** **ժամանեցինք**: — Мы прибыли.'] },  
+                { hy: '**Շրջայց**', tr: 'Shrayts', ru: 'Экскурсия', usage: 'Осмотр достопримечательностей.',  
+                    examples: ['**Շրջայցը** **հետաքրքիր** **էր**: — Экскурсия была интересной.'] },  
+                { hy: '**Լողափ**', tr: 'Loghaph', ru: 'Пляж', usage: 'Место для отдыха у воды.',  
+                    examples: ['**Լողափը** **մաքուր** **է**: — Пляж чистый.'] },  
+                { hy: '**Ծով**', tr: 'Tsov', ru: 'Море', usage: 'Водоём.', examples: ['**Ծովը** **գեղեցիկ** **է**: — Море красивое.'] },  
+                { hy: '**Լեռ**', tr: 'Lerr', ru: 'Гора', usage: 'Горный рельеф.', examples: ['**Լեռները** **բարձր** **են**: — Горы высокие.'] },  
+                { hy: '**Եղանակ**', tr: 'Yeghanak', ru: 'Погода', usage: 'Атмосферные условия.',  
+                    examples: ['**Եղանակը** **լավ** **է**: — Погода хорошая.'] },  
+                { hy: '**Հիշարժան**', tr: 'Hisharzhan', ru: 'Памятный', usage: 'Описание впечатлений.',  
+                    examples: ['**Ճանապարհորդությունը** **հիշարժան** **էր**: — Путешествие было памятным.'] },  
+            ],  
+            grammar: {  
+                title: 'Путешествия',  
+                explanation: 'Глаголы движения: "**մեկնել**" (отправляться), "**ժամանել**" (прибывать). Для указания направления используется суффикс "-**ով**" (на ...) или "-**ում**" (в ...). Вопрос "**Որտեղ**?" (где?) и "**Ուր**?" (куда?) — важны для ориентации.'  
+            }  
+        }, {  
+            id: 'doctor',  
+            title: 'Врач',  
+            icon: '🏥',  
+            words: [  
+                { hy: '**Բժիշկ**', tr: 'Bzhishk', ru: 'Врач', usage: 'Медицинский работник.',  
+                    examples: ['**Բժիշկը** **զննեց** **ինձ**: — Врач осмотрел меня.'] },  
+                { hy: '**Հիվանդություն**', tr: 'Hivandutyun', ru: 'Болезнь', usage: 'Состояние нездоровья.',  
+                    examples: ['**Ես** **հիվանդ** **եմ**: — Я болен.'] },  
+                { hy: '**Հիվանդանոց**', tr: 'Hivandanots', ru: 'Больница', usage: 'Медицинское учреждение.',  
+                    examples: ['**Նա** **հիվանդանոցում** **է**: — Он в больнице.'] },  
+                { hy: '**Դեղ**', tr: 'Degh', ru: 'Лекарство', usage: 'Медицинский препарат.',  
+                    examples: ['**Բժիշկը** **դեղ** **նշանակեց**: — Врач назначил лекарство.'] },  
+                { hy: '**Դեղատուն**', tr: 'Deghatun', ru: 'Аптека', usage: 'Место покупки лекарств.',  
+                    examples: ['**Դեղատունը** **մոտ** **է**: — Аптека рядом.'] },  
+                { hy: '**Ցավ**', tr: 'Tsav', ru: 'Боль', usage: 'Физическое страдание.',  
+                    examples: ['**Գլուխս** **ցավում** **է**: — У меня болит голова.'] },  
+                { hy: '**Ջերմություն**', tr: 'Jermutyun', ru: 'Температура', usage: 'Повышенная температура тела.',  
+                    examples: ['**Ես** **ջերմություն** **ունեմ**: — У меня температура.'] },  
+                { hy: '**Գլխացավ**', tr: 'Glkhatsav', ru: 'Головная боль', usage: 'Боль в голове.',  
+                    examples: ['**Գլխացավը** **ուժեղ** **է**: — Головная боль сильная.'] },  
+                { hy: '**Կոկորդի** **ցավ**', tr: 'Kokordi tsav', ru: 'Боль в горле', usage: 'Симптом простуды.',  
+                    examples: ['**Կոկորդս** **ցավում** **է**: — У меня болит горло.'] },  
+                { hy: '**Հազ**', tr: 'Haz', ru: 'Кашель', usage: 'Симптом.', examples: ['**Ես** **հազում** **եմ**: — Я кашляю.'] },  
+                { hy: '**Քթահոս**', tr: 'Ktahos', ru: 'Насморк', usage: 'Симптом простуды.',  
+                    examples: ['**Քթահոս** **ունեմ**: — У меня насморк.'] },  
+                { hy: '**Առողջություն**', tr: 'Aroghjutyun', ru: 'Здоровье', usage: 'Состояние организма.',  
+                    examples: ['**Առողջությունը** **կարևոր** **է**: — Здоровье важно.'] },  
+                { hy: '**Առողջ**', tr: 'Aroghj', ru: 'Здоровый', usage: 'Состояние без болезни.',  
+                    examples: ['**Ես** **առողջ** **եմ**: — Я здоров.'] },  
+                { hy: '**Բուժում**', tr: 'Buzhum', ru: 'Лечение', usage: 'Процесс выздоровления.',  
+                    examples: ['**Բուժումը** **երկար** **է**: — Лечение долгое.'] },  
+                { hy: '**Քննություն**', tr: 'Knnutyun', ru: 'Обследование', usage: 'Медицинский осмотр.',  
+                    examples: ['**Քննությունը** **ցույց** **տվեց**: — Обследование показало.'] },  
+                { hy: '**Նշանակում**', tr: 'Nshanakum', ru: 'Назначение (врача)', usage: 'Предписание врача.',  
+                    examples: ['**Բժիշկը** **նշանակում** **արեց**: — Врач сделал назначение.'] },  
+                { hy: '**Վիրահատություն**', tr: 'Virahatutyun', ru: 'Операция', usage: 'Хирургическое вмешательство.',  
+                    examples: ['**Նա** **վիրահատության** **կարիք** **ունի**: — Ему нужна операция.'] },  
+                { hy: '**Շտապ** **օգնություն**', tr: 'Shtap ognutyun', ru: 'Скорая помощь', usage: 'Экстренная помощь.',  
+                    examples: ['**Շտապ** **օգնություն** **կանչեցի**: — Я вызвал скорую помощь.'] },  
+                { hy: '**Ապահովագրություն**', tr: 'Apahovagrutyun', ru: 'Страховка', usage: 'Медицинская страховка.',  
+                    examples: ['**Ապահովագրություն** **ունեմ**: — У меня есть страховка.'] },  
+                { hy: '**Առողջարան**', tr: 'Aroghjaran', ru: 'Санаторий', usage: 'Место для восстановления.',  
+                    examples: ['**Նա** **առողջարանում** **է**: — Он в санатории.'] },  
+            ],  
+            grammar: {  
+                title: 'Здоровье и медицина',  
+                explanation: 'Для описания симптомов используется конструкция "**իմ** ...-**ը** **ցավում** **է**" (у меня болит ...) или "**ես** ... **ունեմ**" (у меня есть ...). "**Ցավ**" — боль, "**ջերմություն**" — температура. Важно знать названия частей тела.'  
+            }  
+        }, {  
+            id: 'daily',  
+            title: 'Повседневные разговоры',  
+            icon: '💬',  
+            words: [  
+                { hy: '**Ի՞նչ** **ես** **անում**', tr: 'Inch es anum?', ru: 'Что ты делаешь?', usage: 'Вопрос о текущем занятии.',  
+                    examples: ['**Ի՞նչ** **ես** **անում** **այսօր**: — Что ты делаешь сегодня?'] },  
+                { hy: '**Ես** **կարդում** **եմ**', tr: 'Yes kardum em', ru: 'Я читаю', usage: 'Занятие.',  
+                    examples: ['**Ես** **կարդում** **եմ** **գիրք**: — Я читаю книгу.'] },  
+                { hy: '**Ես** **գրում** **եմ**', tr: 'Yes grum em', ru: 'Я пишу', usage: 'Занятие.',  
+                    examples: ['**Ես** **գրում** **եմ** **նամակ**: — Я пишу письмо.'] },  
+                { hy: '**Ես** **լսում** **եմ**', tr: 'Yes lsum em', ru: 'Я слушаю', usage: 'Занятие.',  
+                    examples: ['**Ես** **լսում** **եմ** **երաժշտություն**: — Я слушаю музыку.'] },  
+                { hy: '**Ես** **խոսում** **եմ**', tr: 'Yes khosum em', ru: 'Я говорю', usage: 'Речь.',  
+                    examples: ['**Ես** **խոսում** **եմ** **հայերեն**: — Я говорю по-армянски.'] },  
+                { hy: '**Ի՞նչ** **ես** **ուզում**', tr: 'Inch es uzum?', ru: 'Что ты хочешь?', usage: 'Вопрос о желании.',  
+                    examples: ['**Ի՞նչ** **ես** **ուզում** **ուտել**: — Что ты хочешь есть?'] },  
+                { hy: '**Ես** **ուզում** **եմ**', tr: 'Yes uzum em', ru: 'Я хочу', usage: 'Выражение желания.',  
+                    examples: ['**Ես** **ուզում** **եմ** **գնալ**: — Я хочу пойти.'] },  
+                { hy: '**Ես** **չեմ** **ուզում**', tr: 'Yes chem uzum', ru: 'Я не хочу', usage: 'Отрицание желания.',  
+                    examples: ['**Ես** **չեմ** **ուզում** **աշխատել**: — Я не хочу работать.'] },  
+                { hy: '**Կարո՞ղ** **ես** **օգնել**', tr: 'Karogh es ognel?', ru: 'Можешь помочь?', usage: 'Просьба о помощи.',  
+                    examples: ['**Կարո՞ղ** **ես** **օգնել** **ինձ**: — Можешь помочь мне?'] },  
+                { hy: '**Այո**, **կարող** **եմ**', tr: 'Ayo, karogh em', ru: 'Да, могу', usage: 'Утвердительный ответ.',  
+                    examples: ['**Այո**, **կարող** **եմ** **օգնել**: — Да, могу помочь.'] },  
+                { hy: '**Ոչ**, **չեմ** **կարող**', tr: 'Voch, chem karogh', ru: 'Нет, не могу', usage: 'Отрицательный ответ.',  
+                    examples: ['**Ոչ**, **չեմ** **կարող** **այսօր**: — Нет, не могу сегодня.'] },  
+                { hy: '**Ներեցեք**', tr: 'Neretsek', ru: 'Извините', usage: 'Вежливое обращение.',  
+                    examples: ['**Ներեցեք**, **կարող** **եք** **օգնել**: — Извините, вы можете помочь?'] },  
+                { hy: '**Կներեք**', tr: 'Kner ek', ru: 'Простите', usage: 'Извинение.', examples: ['**Կներեք**, **ես** **սխալվեցի**: — Простите, я ошибся.'] },  
+                { hy: '**Ոչինչ**', tr: 'Vochinch', ru: 'Ничего', usage: 'Ответ на извинение.',  
+                    examples: ['— **Կներեք**: — **Ոչինչ**: — Простите. — Ничего.'] },  
+                { hy: '**Իհարկե**', tr: 'Iharke', ru: 'Конечно', usage: 'Согласие.', examples: ['**Իհարկե**, **կարող** **ես**: — Конечно, можешь.'] },  
+                { hy: '**Հաստատ**', tr: 'Hastat', ru: 'Точно / определённо', usage: 'Уверенность.',  
+                    examples: ['**Հաստատ**, **ես** **կգամ**: — Точно, я приду.'] },  
+                { hy: '**Միգուցե**', tr: 'Migutse', ru: 'Может быть', usage: 'Неуверенность.',  
+                    examples: ['**Միգուցե**, **վաղը**: — Может быть, завтра.'] },  
+                { hy: '**Կարծում** **եմ**', tr: 'Kartsum em', ru: 'Я думаю', usage: 'Мнение.',  
+                    examples: ['**Կարծում** **եմ**, **որ** **ճիշտ** **է**: — Я думаю, что это правильно.'] },  
+                { hy: '**Դու** **ճիշտ** **ես**', tr: 'Du chisht es', ru: 'Ты прав', usage: 'Согласие с мнением.',  
+                    examples: ['**Դու** **ճիշտ** **ես**, **ես** **համաձայն** **եմ**: — Ты прав, я согласен.'] },  
+                { hy: '**Ես** **համաձայն** **եմ**', tr: 'Yes hamadzayn em', ru: 'Я согласен', usage: 'Согласие.',  
+                    examples: ['**Ես** **համաձայն** **եմ** **քեզ** **հետ**: — Я согласен с тобой.'] },  
+            ],  
+            grammar: {  
+                title: 'Повседневные фразы',  
+                explanation: 'В повседневной речи часто используются сокращённые формы. Глаголы настоящего времени образуются с помощью суффикса "-**ում**" + личные окончания. Отрицание — с частицей "**չ**" перед глаголом: "**չեմ** **ուզում**" (не хочу).'  
+            }  
+        }, {  
+            id: 'native',  
+            title: 'Общение с носителями',  
+            icon: '🗣️',  
+            words: [  
+                { hy: '**Հայերեն**', tr: 'Hayeren', ru: 'Армянский язык', usage: 'Язык общения.',  
+                    examples: ['**Ես** **սովորում** **եմ** **հայերեն**: — Я учу армянский.'] },  
+                { hy: '**Խոսել**', tr: 'Kh os el', ru: 'Говорить', usage: 'Акт речи.',  
+                    examples: ['**Ես** **ուզում** **եմ** **խոսել** **հայերեն**: — Я хочу говорить по-армянски.'] },  
+                { hy: '**Հասկանալ**', tr: 'Haskan al', ru: 'Понимать', usage: 'Понимание речи.',  
+                    examples: ['**Ես** **հասկանում** **եմ**: — Я понимаю.'] },  
+                { hy: '**Դանդաղ**', tr: 'Dandagh', ru: 'Медленно', usage: 'Просьба говорить медленнее.',  
+                    examples: ['**Խնդրում** **եմ**, **դանդաղ** **խոսեք**: — Пожалуйста, говорите медленно.'] },  
+                { hy: '**Կրկնել**', tr: 'Krkn el', ru: 'Повторить', usage: 'Просьба повторить.',  
+                    examples: ['**Կարո՞ղ** **եք** **կրկնել**: — Можете повторить?'] },  
+                { hy: '**Ի՞նչ** **է** **նշանակում**', tr: 'Inch e nshanakum?', ru: 'Что значит?', usage: 'Вопрос о значении.',  
+                    examples: ['**Ի՞նչ** **է** **նշանակում** **այս** **բառը**: — Что значит это слово?'] },  
+                { hy: '**Ինչպե՞ս** **է** **ասվում**', tr: 'Inchpes e asvum?', ru: 'Как сказать?', usage: 'Вопрос о переводе.',  
+                    examples: ['**Ինչպե՞ս** **է** **ասվում** "спасибо" **հայերեն**: — Как сказать "спасибо" по-армянски?'] },  
+                { hy: '**Ես** **սովորում** **եմ**', tr: 'Yes sovorum em', ru: 'Я учусь / изучаю', usage: 'Обучение.',  
+                    examples: ['**Ես** **սովորում** **եմ** **հայերեն**: — Я учу армянский.'] },  
+                { hy: '**Մի** **քիչ**', tr: 'Mi kich', ru: 'Немного', usage: 'Небольшое количество.',  
+                    examples: ['**Ես** **մի** **քիչ** **հայերեն** **գիտեմ**: — Я немного знаю армянский.'] },  
+                { hy: '**Լավ** **եմ** **խոսում**', tr: 'Lav em khosum', ru: 'Хорошо говорю', usage: 'Уровень владения.',  
+                    examples: ['**Ես** **բավականին** **լավ** **եմ** **խոսում**: — Я довольно хорошо говорю.'] },  
+                { hy: '**Վատ** **եմ** **խոսում**', tr: 'Vat em khosum', ru: 'Плохо говорю', usage: 'Уровень владения.',  
+                    examples: ['**Ես** **դեռ** **վատ** **եմ** **խոսում**: — Я ещё плохо говорю.'] },  
+                { hy: '**Հարց**', tr: 'Harts', ru: 'Вопрос', usage: 'Запрос информации.',  
+                    examples: ['**Ես** **հարց** **ունեմ**: — У меня есть вопрос.'] },  
+                { hy: '**Պատասխան**', tr: 'Pataskhan', ru: 'Ответ', usage: 'Реакция на вопрос.',  
+                    examples: ['**Պատասխանը** **պարզ** **է**: — Ответ прост.'] },  
+                { hy: '**Զրույց**', tr: 'Zruyts', ru: 'Разговор', usage: 'Диалог.', examples: ['**Զրույցը** **հետաքրքիր** **էր**: — Разговор был интересным.'] },  
+                { hy: '**Շփվել**', tr: 'Shpvel', ru: 'Общаться', usage: 'Взаимодействие с людьми.',  
+                    examples: ['**Ես** **սիրում** **եմ** **շփվել**: — Я люблю общаться.'] },  
+                { hy: '**Մշակույթ**', tr: 'Mshakuyt', ru: 'Культура', usage: 'Культурные особенности.',  
+                    examples: ['**Հայկական** **մշակույթը** **հարուստ** **է**: — Армянская культура богата.'] },  
+                { hy: '**Ավանդույթ**', tr: 'Avanduyt', ru: 'Традиция', usage: 'Обычаи.',  
+                    examples: ['**Նրանք** **հարգում** **են** **ավանդույթները**: — Они уважают традиции.'] },  
+                { hy: '**Հյուրասիրություն**', tr: 'Hyurasirutyun', ru: 'Гостеприимство', usage: 'Армянская черта.',  
+                    examples: ['**Հյուրասիրությունը** **հայկական** **է**: — Гостеприимство — армянская черта.'] },  
+                { hy: '**Բարեկամ**', tr: 'Barekam', ru: 'Друг (близкий)', usage: 'Близкий друг.',  
+                    examples: ['**Նա** **իմ** **բարեկամն** **է**: — Он мой близкий друг.'] },  
+                { hy: '**Շնորհակալություն**', tr: 'Shnorhakalutyun', ru: 'Спасибо (ещё раз)', usage: 'Благодарность.',  
+                    examples: ['**Շնորհակալություն** **ձեր** **օգնության** **համար**: — Спасибо за вашу помощь.'] },  
+            ],  
+            grammar: {  
+                title: 'Общение с носителями',  
+                explanation: 'Для успешного общения важно знать фразы-клише: "**Ինչպե՞ս** **է** **ասվում**" (как сказать), "**Ի՞նչ** **է** **նշանակում**" (что значит). Не бойся просить повторить — "**Կարո՞ղ** **եք** **կրկնել**". Армяне ценят старание говорить на их языке.'  
+            }  
+        }];  
+  
+        // ---------- Дополнительные слова для повторения (общий банк) ----------  
+        // Все слова уже есть в уроках, но для системы повторения мы будем использовать  
+        // flat-список всех слов с привязкой к уроку.  
+  
+        // ---------- Состояние приложения ----------  
+        const STATE_KEY = 'armenian_app_state';  
+  
+        function getDefaultState() {  
+            return {  
+                xp: 0,  
+                streak: 0,  
+                lastStudyDate: null,  
+                completedLessons: [], // id уроков, которые полностью пройдены  
+                lessonProgress: {}, // { lessonId: { wordIndex: 0, exercisesDone: 0, total: 0 } }  
+                wordReviews: {}, // { wordId: { nextReview: timestamp, mistakes: 0 } }  
+                achievements: [],  
+                settings: {  
+                    soundEnabled: true,  
+                    speechRate: 0.9,  
+                },  
+                calendar: {}, // { '2026-01-01': true }  
+                currentLesson: null,  
+                exerciseHistory: [],  
+                totalWordsLearned: 0,  
+                level: 1,  
+            };  
+        }  
+  
+        let state = getDefaultState();  
+  
+        // ---------- DOM refs ----------  
+        const $ = id => document.getElementById(id);  
+        const viewHome = $('viewHome');  
+        const viewLessons = $('viewLessons');  
+        const viewLesson = $('viewLesson');  
+        const viewProfile = $('viewProfile');  
+        const viewAchievements = $('viewAchievements');  
+        const viewSettings = $('viewSettings');  
+        const mainContent = $('mainContent');  
+        const xpDisplay = $('xpDisplay');  
+        const streakDisplay = $('streakDisplay');  
+        const toast = $('toast');  
+        const xpPopup = $('xpPopup');  
+        const lessonBadge = $('lessonBadge');  
+  
+        // ---------- Utils ----------  
+        function saveState() {  
+            try {  
+                localStorage.setItem(STATE_KEY, JSON.stringify(state));  
+            } catch (e) { /* ignore */ }  
+        }  
+  
+        function loadState() {  
+            try {  
+                const raw = localStorage.getItem(STATE_KEY);  
+                if (raw) {  
+                    const saved = JSON.parse(raw);  
+                    state = { ...getDefaultState(), ...saved };  
+                    // миграция: если чего-то нет, добавить  
+                    if (!state.calendar) state.calendar = {};  
+                    if (!state.wordReviews) state.wordReviews = {};  
+                    if (!state.settings) state.settings = { soundEnabled: true, speechRate: 0.9 };  
+                    if (!state.exerciseHistory) state.exerciseHistory = [];  
+                    if (!state.totalWordsLearned) state.totalWordsLearned = 0;  
+                    if (!state.level) state.level = 1;  
+                    return true;  
+                }  
+            } catch (e) { /* ignore */ }  
+            return false;  
+        }  
+  
+        function getToday() {  
+            return new Date().toISOString().split('T')[0];  
+        }  
+  
+        function getWordId(lessonId, wordIndex) {  
+            return `${lessonId}-${wordIndex}`;  
+        }  
+  
+        function getAllWords() {  
+            const all = [];  
+            LESSONS_DATA.forEach(lesson => {  
+                lesson.words.forEach((w, idx) => {  
+                    all.push({ ...w, lessonId: lesson.id, wordIndex: idx, id: getWordId(lesson.id, idx) });  
+                });  
+            });  
+            return all;  
+        }  
+  
+        function getWordsForReview() {  
+            const now = Date.now();  
+            const all = getAllWords();  
+            const toReview = [];  
+            all.forEach(w => {  
+                const review = state.wordReviews[w.id];  
+                if (!review) {  
+                    // слово ещё не изучалось -> не показываем в повторении  
+                    return;  
+                }  
+                if (review.nextReview <= now) {  
+                    toReview.push({ ...w, mistakes: review.mistakes || 0 });  
+                }  
+            });  
+            return toReview.sort((a, b) => (a.mistakes || 0) - (b.mistakes || 0));  
+        }  
+  
+        function getLessonProgress(lessonId) {  
+            if (!state.lessonProgress[lessonId]) {  
+                const lesson = LESSONS_DATA.find(l => l.id === lessonId);  
+                state.lessonProgress[lessonId] = {  
+                    wordIndex: 0,  
+                    exercisesDone: 0,  
+                    total: lesson ? lesson.words.length : 0,  
+                };  
+            }  
+            return state.lessonProgress[lessonId];  
+        }  
+  
+        function isLessonCompleted(lessonId) {  
+            return state.completedLessons.includes(lessonId);  
+        }  
+  
+        function isLessonUnlocked(lessonId) {  
+            const idx = LESSONS_DATA.findIndex(l => l.id === lessonId);  
+            if (idx === 0) return true;  
+            const prevId = LESSONS_DATA[idx - 1].id;  
+            return isLessonCompleted(prevId);  
+        }  
+  
+        function getCompletionPercentage() {  
+            const total = LESSONS_DATA.length;  
+            const done = state.completedLessons.length;  
+            return Math.round((done / total) * 100);  
+        }  
+  
+        function getLevel() {  
+            const xp = state.xp;  
+            if (xp < 50) return 1;  
+            if (xp < 150) return 2;  
+            if (xp < 300) return 3;  
+            if (xp < 500) return 4;  
+            if (xp < 800) return 5;  
+            if (xp < 1200) return 6;  
+            if (xp < 1700) return 7;  
+            if (xp < 2300) return 8;  
+            if (xp < 3000) return 9;  
+            return 10;  
+        }  
+  
+        function getLevelTitle(level) {  
+            const titles = ['Новичок', 'Начинающий', 'Ученик', 'Путник', 'Исследователь', 'Знаток', 'Мастер', 'Эксперт',  
+                'Полиглот', 'Легенда'  
+            ];  
+            return titles[level - 1] || 'Мастер';  
+        }  
+  
+        // ---------- Audio ----------  
+        function speak(text, rate = 0.9) {  
+            if (!state.settings.soundEnabled) return;  
+            if (!window.speechSynthesis) {  
+                console.warn('SpeechSynthesis not supported');  
+                return;  
+            }  
+            // отменяем предыдущие  
+            window.speechSynthesis.cancel();  
+            const utterance = new SpeechSynthesisUtterance(text);  
+            utterance.lang = 'hy-AM';  
+            utterance.rate = state.settings.speechRate || 0.9;  
+            utterance.pitch = 1;  
+            // пытаемся найти армянский голос  
+            const voices = window.speechSynthesis.getVoices();  
+            const arVoice = voices.find(v => v.lang.startsWith('hy'));  
+            if (arVoice) utterance.voice = arVoice;  
+            window.speechSynthesis.speak(utterance);  
+        }  
+  
+        // ---------- Toast ----------  
+        let toastTimer = null;  
+  
+        function showToast(msg, duration = 2500) {  
+            toast.textContent = msg;  
+            toast.classList.add('show');  
+            clearTimeout(toastTimer);  
+            toastTimer = setTimeout(() => {  
+                toast.classList.remove('show');  
+            }, duration);  
+        }  
+  
+        // ---------- XP Popup ----------  
+        function showXPPopup(amount) {  
+            xpPopup.textContent = `+${amount} XP`;  
+            xpPopup.classList.remove('show');  
+            void xpPopup.offsetWidth;  
+            xpPopup.classList.add('show');  
+            setTimeout(() => xpPopup.classList.remove('show'), 900);  
+        }  
+  
+        // ---------- Добавление XP ----------  
+        function addXP(amount) {  
+            state.xp += amount;  
+            state.level = getLevel();  
+            updateHeader();  
+            saveState();  
+            showXPPopup(amount);  
+            // Проверка достижений  
+            checkAchievements();  
+        }  
+  
+        // ---------- Streak ----------  
+        function updateStreak() {  
+            const today = getToday();  
+            if (state.lastStudyDate === today) return;  
+            const yesterday = new Date();  
+            yesterday.setDate(yesterday.getDate() - 1);  
+            const yStr = yesterday.toISOString().split('T')[0];  
+            if (state.lastStudyDate === yStr) {  
+                state.streak += 1;  
+            } else if (state.lastStudyDate !== today) {  
+                state.streak = 1;  
+            }  
+            state.lastStudyDate = today;  
+            // сохраняем в календарь  
+            state.calendar[today] = true;  
+            saveState();  
+            updateHeader();  
+            checkAchievements();  
+        }  
+  
+        // ---------- Достижения ----------  
+        function checkAchievements() {  
+            const unlocked = state.achievements || [];  
+            const allAch = [  
+                { id: 'first_lesson', label: 'Первый урок', icon: '🌟', check: () => state.completedLessons.length >= 1 },  
+                { id: 'five_lessons', label: '5 уроков', icon: '⭐', check: () => state.completedLessons.length >= 5 },  
+                { id: 'ten_lessons', label: '10 уроков', icon: '🏆', check: () => state.completedLessons.length >= 10 },  
+                { id: 'all_lessons', label: 'Все уроки', icon: '👑', check: () => state.completedLessons.length >= 15 },  
+                { id: 'streak_3', label: 'Серия [3 дня](x-apple-data-detectors://embedded-result/94755)', icon: '🔥', check: () => state.streak >= 3 },  
+                { id: 'streak_7', label: 'Серия 7 дней', icon: '⚡', check: () => state.streak >= 7 },  
+                { id: 'streak_30', label: 'Серия 30 дней', icon: '💎', check: () => state.streak >= 30 },  
+                { id: 'xp_100', label: '100 XP', icon: '🎯', check: () => state.xp >= 100 },  
+                { id: 'xp_500', label: '500 XP', icon: '🚀', check: () => state.xp >= 500 },  
+                { id: 'xp_1000', label: '1000 XP', icon: '🌟', check: () => state.xp >= 1000 },  
+            ];  
+            allAch.forEach(ach => {  
+                if (!unlocked.includes([ach.id](http://ach.id)) && ach.check()) {  
+                    unlocked.push([ach.id](http://ach.id));  
+                    showToast(`🏅 Достижение: ${ach.icon} ${ach.label}!`);  
+                }  
+            });  
+            state.achievements = unlocked;  
+            saveState();  
+        }  
+  
+        // ---------- Update Header ----------  
+        function updateHeader() {  
+            xpDisplay.textContent = state.xp;  
+            streakDisplay.textContent = state.streak;  
+            const level = getLevel();  
+            // обновляем бейдж уроков  
+            const total = LESSONS_DATA.length;  
+            const done = state.completedLessons.length;  
+            const remaining = total - done;  
+            if (remaining > 0) {  
+                lessonBadge.textContent = remaining;  
+                lessonBadge.style.display = 'block';  
+            } else {  
+                lessonBadge.style.display = 'none';  
+            }  
+        }  
+  
+        // ---------- Navigation ----------  
+        function navigateTo(viewId) {  
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));  
+            const target = document.getElementById(viewId);  
+            if (target) target.classList.add('active');  
+            document.querySelectorAll('.bottom-nav button').forEach(btn => {  
+                btn.classList.toggle('active', btn.dataset.view === viewId);  
+            });  
+            // рендерим нужный вид  
+            if (viewId === 'viewHome') renderHome();  
+            else if (viewId === 'viewLessons') renderLessons();  
+            else if (viewId === 'viewProfile') renderProfile();  
+            else if (viewId === 'viewAchievements') renderAchievements();  
+            else if (viewId === 'viewSettings') renderSettings();  
+            mainContent.scrollTop = 0;  
+        }  
+  
+        // ---------- Render: Home ----------  
+        function renderHome() {  
+            const container = viewHome;  
+            const pct = getCompletionPercentage();  
+            const level = getLevel();  
+            const levelTitle = getLevelTitle(level);  
+            const totalWords = getAllWords().length;  
+            const learned = state.completedLessons.reduce((acc, id) => {  
+                const lesson = LESSONS_DATA.find(l => l.id === id);  
+                return acc + (lesson ? lesson.words.length : 0);  
+            }, 0);  
+            const reviewWords = getWordsForReview();  
+  
+            let html = `  
+            <div class="card card-green text-center">  
+              <div style="font-size:32px; font-weight:700; color:var(--green-dark);">${levelTitle}</div>  
+              <div style="font-size:14px; color:var(--text-secondary);">Уровень ${level}</div>  
+              <div style="margin:10px 0 4px; display:flex; justify-content:center; gap:20px;">  
+                <div><span style="font-weight:700;font-size:20px;">${state.xp}</span><br><span style="font-size:12px;color:var(--text-secondary);">XP</span></div>  
+                <div><span style="font-weight:700;font-size:20px;">${state.streak}</span><br><span style="font-size:12px;color:var(--text-secondary);">🔥 Серия</span></div>  
+                <div><span style="font-weight:700;font-size:20px;">${pct}%</span><br><span style="font-size:12px;color:var(--text-secondary);">Прогресс</span></div>  
+              </div>  
+              <div style="height:6px;background:var(--border);border-radius:6px;overflow:hidden;margin-top:6px;">  
+                <div style="height:100%;width:${pct}%;background:var(--green);border-radius:6px;transition:width 0.6s;"></div>  
+              </div>  
+            </div>  
+  
+            <div class="card">  
+              <h3 style="font-size:16px;margin-bottom:6px;">📚 Статистика</h3>  
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px;">  
+                <div><span style="color:var(--text-secondary);">Слов изучено:</span> <strong>${learned}</strong></div>  
+                <div><span style="color:var(--text-secondary);">Всего слов:</span> <strong>${totalWords}</strong></div>  
+                <div><span style="color:var(--text-secondary);">Уроков пройдено:</span> <strong>${state.completedLessons.length}/${LESSONS_DATA.length}</strong></div>  
+                <div><span style="color:var(--text-secondary);">Достижений:</span> <strong>${(state.achievements||[]).length}</strong></div>  
+              </div>  
+            </div>  
+          `;  
+  
+            // Повторение  
+            if (reviewWords.length > 0) {  
+                html += `  
+              <div class="card" style="border-color:var(--green);">  
+                <h3 style="font-size:16px;margin-bottom:8px;">🔄 Повторение (${reviewWords.length} слов)</h3>  
+                <div style="max-height:200px;overflow-y:auto;">  
+                  ${reviewWords.slice(0, 10).map(w => `  
+                    <div class="review-word">  
+                      <div><span class="hy">${w.hy}</span> <span style="color:var(--text-secondary);font-size:13px;">— ${[w.ru](http://w.ru)}</span></div>  
+                      <button class="btn btn-small btn-primary" onclick="speak('${w.hy}')">🔊</button>  
+                    </div>  
+                  `).join('')}  
+                  ${reviewWords.length > 10 ? `<div style="text-align:center;font-size:13px;color:var(--text-secondary);padding:4px;">+ ещё ${reviewWords.length - 10} слов</div>` : ''}  
+                </div>  
+                <button class="btn btn-primary mt-12" onclick="navigateTo('viewLessons')">Перейти к урокам</button>  
+              </div>  
+            `;  
+            } else {  
+                html += `  
+              <div class="card" style="border-color:var(--green);">  
+                <h3 style="font-size:16px;margin-bottom:4px;">✅ Отлично!</h3>  
+                <p style="font-size:14px;color:var(--text-secondary);">Все слова повторены. Учи дальше!</p>  
+                <button class="btn btn-primary mt-12" onclick="navigateTo('viewLessons')">К урокам</button>  
+              </div>  
+            `;  
+            }  
+  
+            // Календарь (последние 7 дней)  
+            const today = new Date();  
+            const days = [];  
+            for (let i = 6; i >= 0; i--) {  
+                const d = new Date(today);  
+                d.setDate(d.getDate() - i);  
+                const key = d.toISOString().split('T')[0];  
+                const isActive = state.calendar[key] || false;  
+                const isToday = i === 0;  
+                days.push({ key, day: d.getDate(), active: isActive, today: isToday });  
+            }  
+            html += `  
+            <div class="card">  
+              <h3 style="font-size:16px;margin-bottom:6px;">📅 Календарь занятий</h3>  
+              <div class="calendar-grid">  
+                ${days.map(d => `  
+                  <div class="day ${d.active ? 'active' : ''} ${d.today ? 'today' : ''}">${d.day}</div>  
+                `).join('')}  
+              </div>  
+            </div>  
+          `;  
+  
+            container.innerHTML = html;  
+        }  
+  
+        // ---------- Render: Lessons ----------  
+        function renderLessons() {  
+            const container = viewLessons;  
+            let html = `  
+            <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">📖 Все уроки</h2>  
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;">  
+              Пройдено: ${state.completedLessons.length} из ${LESSONS_DATA.length}  
+            </div>  
+          `;  
+  
+            LESSONS_DATA.forEach((lesson, idx) => {  
+                const completed = isLessonCompleted(lesson.id);  
+                const unlocked = isLessonUnlocked(lesson.id);  
+                const progress = getLessonProgress(lesson.id);  
+                const pct = progress.total > 0 ? Math.round((progress.wordIndex / progress.total) * 100) : 0;  
+                const statusIcon = completed ? '✅' : (unlocked ? '📖' : '🔒');  
+  
+                html += `  
+              <div class="lesson-item ${completed ? 'completed' : ''} ${!unlocked ? 'locked' : ''}"  
+                   onclick="${unlocked ? `openLesson('${[lesson.id](http://lesson.id)}')` : `showToast('🔒 Урок заблокирован. Пройдите предыдущий.'`}">  
+                <div class="icon">${lesson.icon}</div>  
+                <div class="info">  
+                  <h4>${lesson.title}</h4>  
+                  <p>${lesson.words.length} слов</p>  
+                  ${!completed && unlocked ? `<div class="progress-bar"><div class="fill" style="width:${pct}%;"></div></div>` : ''}  
+                  ${completed ? '<span style="font-size:12px;color:var(--green-dark);">✅ Пройдено</span>' : ''}  
+                </div>  
+                <div class="status">${statusIcon}</div>  
+              </div>  
+            `;  
+            });  
+  
+            container.innerHTML = html;  
+        }  
+  
+        // ---------- Open Lesson ----------  
+        let currentLessonId = null;  
+        let lessonWordIndex = 0;  
+        let currentExercise = null;  
+        let exerciseAnswered = false;  
+  
+        function openLesson(lessonId) {  
+            if (!isLessonUnlocked(lessonId)) {  
+                showToast('🔒 Урок заблокирован.');  
+                return;  
+            }  
+            currentLessonId = lessonId;  
+            const lesson = LESSONS_DATA.find(l => l.id === lessonId);  
+            if (!lesson) return;  
+            const progress = getLessonProgress(lessonId);  
+            lessonWordIndex = progress.wordIndex || 0;  
+            if (lessonWordIndex >= lesson.words.length) {  
+                // урок уже пройден, но можно повторить  
+                lessonWordIndex = 0;  
+            }  
+            navigateTo('viewLesson');  
+            renderLesson();  
+        }  
+  
+        function renderLesson() {  
+            const container = viewLesson;  
+            const lesson = LESSONS_DATA.find(l => l.id === currentLessonId);  
+            if (!lesson) { container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Урок не найден</h3></div>'; return; }  
+  
+            const words = lesson.words;  
+            const total = words.length;  
+            const idx = lessonWordIndex;  
+            const progress = getLessonProgress(currentLessonId);  
+            const pct = Math.round((idx / total) * 100);  
+  
+            let html = `  
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">  
+              <button class="btn btn-small btn-secondary" onclick="navigateTo('viewLessons')">← Назад</button>  
+              <span style="font-weight:600;font-size:14px;">${lesson.icon} ${lesson.title}</span>  
+              <span style="font-size:13px;color:var(--text-secondary);">${idx+1}/${total}</span>  
+            </div>  
+            <div class="lesson-progress">  
+              <span style="font-size:13px;">${pct}%</span>  
+              <div class="bar"><div class="fill" style="width:${pct}%;"></div></div>  
+            </div>  
+          `;  
+  
+            if (idx < total) {  
+                const word = words[idx];  
+                const wordId = getWordId(currentLessonId, idx);  
+                const review = state.wordReviews[wordId] || { mistakes: 0, nextReview: 0 };  
+  
+                html += `  
+              <div class="word-card">  
+                <div class="armenian">${word.hy}</div>  
+                <div class="translit">${[word.tr](http://word.tr)}</div>  
+                <div class="russian">${[word.ru](http://word.ru)}</div>  
+                <div class="usage">📌 ${word.usage}</div>  
+                <div class="examples">  
+                  ${word.examples.map(ex => `  
+                    <div class="ex">  
+                      <div class="hy">${ex}</div>  
+                    </div>  
+                  `).join('')}  
+                </div>  
+                <button class="audio-btn" onclick="speak('${word.hy}')">🔊 Слушать произношение</button>  
+                ${review.mistakes > 0 ? `<div style="margin-top:6px;font-size:12px;color:#ff6b6b;">⚠️ Ошибок: ${review.mistakes}</div>` : ''}  
+              </div>  
+            `;  
+  
+                // Упражнение  
+                html += generateExercise(word, lesson, idx);  
+            } else {  
+                // Урок завершён  
+                if (!isLessonCompleted(currentLessonId)) {  
+                    state.completedLessons.push(currentLessonId);  
+                    addXP(20);  
+                    updateStreak();  
+                    saveState();  
+                    showToast('🎉 Урок пройден! +20 XP');  
+                    // Проверка достижений  
+                    checkAchievements();  
+                }  
+                html += `  
+              <div class="card card-green text-center">  
+                <div style="font-size:48px;">🎉</div>  
+                <h3 style="font-size:20px;margin:8px 0;">Урок пройден!</h3>  
+                <p style="color:var(--text-secondary);">Ты выучил ${lesson.words.length} слов.</p>  
+                <button class="btn btn-primary mt-12" onclick="navigateTo('viewLessons')">К списку уроков</button>  
+                ${isLessonUnlocked(LESSONS_DATA.findIndex(l=>l.id===currentLessonId)+1) ? `<button class="btn btn-primary mt-8" onclick="openLesson('${LESSONS_DATA[LESSONS_DATA.findIndex(l=>l.id===currentLessonId)+1]?.id}')">Следующий урок →</button>` : ''}  
+              </div>  
+            `;  
+                container.innerHTML = html;  
+                return;  
+            }  
+  
+            // Кнопки навигации  
+            html += `  
+            <div style="display:flex;gap:10px;margin-top:12px;">  
+              <button class="btn btn-secondary" ${idx === 0 ? 'disabled' : ''} onclick="prevWord()">← Назад</button>  
+              <button class="btn btn-primary" onclick="nextWord()">Дальше →</button>  
+            </div>  
+            ${idx > 0 ? `<button class="btn btn-outline mt-8" onclick="resetLesson()">🔄 Сбросить прогресс урока</button>` : ''}  
+          `;  
+  
+            container.innerHTML = html;  
+  
+            // Сохраняем прогресс  
+            progress.wordIndex = idx;  
+            saveState();  
+        }  
+  
+        // ---------- Generate Exercise ----------  
+        function generateExercise(word, lesson, idx) {  
+            // Случайный тип упражнения  
+            const types = ['translate', 'choose', 'fill', 'order'];  
+            const type = types[idx % types.length]; // чередуем  
+  
+            const allWords = getAllWords();  
+            const otherWords = allWords.filter(w => w.id !== getWordId(lesson.id, idx));  
+  
+            if (type === 'translate') {  
+                // Выбрать правильный перевод  
+                const options = [[word.ru](http://word.ru)];  
+                const shuffled = otherWords.sort(() => Math.random() - 0.5);  
+                for (let i = 0; i < Math.min(3, shuffled.length); i++) {  
+                    if (!options.includes(shuffled[i].ru)) {  
+                        options.push(shuffled[i].ru);  
+                    }  
+                }  
+                // перемешать  
+                for (let i = options.length - 1; i > 0; i--) {  
+                    const j = Math.floor(Math.random() * (i + 1));  
+                    [options[i], options[j]] = [options[j], options[i]];  
+                }  
+                const correct = word.ru;  
+                return `  
+              <div class="exercise-container">  
+                <div class="ex-title">📝 Выберите правильный перевод</div>  
+                <div class="ex-question"><strong>${word.hy}</strong> — ${[word.tr](http://word.tr)}</div>  
+                <div class="ex-options" data-correct="${correct}" data-type="translate">  
+                  ${options.map(opt => `<button onclick="checkExercise(this, '${correct}', 'translate')">${opt}</button>`).join('')}  
+                </div>  
+                <div class="ex-feedback"></div>  
+              </div>  
+            `;  
+            } else if (type === 'choose') {  
+                // Выбрать правильное слово по русскому переводу  
+                const options = [word.hy];  
+                const shuffled = otherWords.sort(() => Math.random() - 0.5);  
+                for (let i = 0; i < Math.min(3, shuffled.length); i++) {  
+                    if (!options.includes(shuffled[i].hy)) {  
+                        options.push(shuffled[i].hy);  
+                    }  
+                }  
+                for (let i = options.length - 1; i > 0; i--) {  
+                    const j = Math.floor(Math.random() * (i + 1));  
+                    [options[i], options[j]] = [options[j], options[i]];  
+                }  
+                const correct = word.hy;  
+                return `  
+              <div class="exercise-container">  
+                <div class="ex-title">📝 Выберите правильное слово</div>  
+                <div class="ex-question">Перевод: <strong>${[word.ru](http://word.ru)}</strong></div>  
+                <div class="ex-options" data-correct="${correct}" data-type="choose">  
+                  ${options.map(opt => `<button onclick="checkExercise(this, '${correct}', 'choose')">${opt}</button>`).join('')}  
+                </div>  
+                <div class="ex-feedback"></div>  
+              </div>  
+            `;  
+            } else if (type === 'fill') {  
+                // Вставить пропущенное слово (просто даём вариант)  
+                const correct = word.hy;  
+                return `  
+              <div class="exercise-container">  
+                <div class="ex-title">📝 Вставьте пропущенное слово</div>  
+                <div class="ex-question">${word.ru} = <strong>${word.tr}</strong> (напишите на армянском)</div>  
+                <div style="display:flex;gap:8px;margin-top:8px;">  
+                  <input type="text" id="fillInput" placeholder="Введите слово..." style="flex:1;padding:10px 14px;border-radius:var(--radius-sm);border:2px solid var(--border);font-size:15px;font-family:var(--font);">  
+                  <button class="btn btn-primary" style="width:auto;padding:10px 20px;" onclick="checkFillExercise('${correct}')">Проверить</button>  
+                </div>  
+                <div class="ex-feedback" id="fillFeedback"></div>  
+              </div>  
+            `;  
+            } else {  
+                // order - расположить в правильном порядке (простое: даём слова и просим выбрать правильный порядок)  
+                const correct = word.hy;  
+                const parts = word.hy.split(' ');  
+                if (parts.length < 2) {  
+                    // если одно слово, делаем translate  
+                    return generateExercise(word, lesson, idx + 1);  
+                }  
+                const shuffled = [...parts].sort(() => Math.random() - 0.5);  
+                return `  
+              <div class="exercise-container">  
+                <div class="ex-title">📝 Расположите в правильном порядке</div>  
+                <div class="ex-question">Составьте слово: <strong>${[word.ru](http://word.ru)}</strong></div>  
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;">  
+                  ${shuffled.map((p, i) => `<button class="btn btn-outline" style="width:auto;padding:6px 14px;" onclick="orderWord(this, '${p}')" data-used="false">${p}</button>`).join('')}  
+                </div>  
+                <div style="display:flex;gap:8px;flex-wrap:wrap;min-height:40px;border:2px dashed var(--border);border-radius:var(--radius-sm);padding:8px;margin-bottom:8px;" id="orderDrop"></div>  
+                <button class="btn btn-primary" onclick="checkOrderExercise('${correct}')">Проверить</button>  
+                <div class="ex-feedback" id="orderFeedback"></div>  
+              </div>  
+            `;  
+            }  
+        }  
+  
+        // ---------- Exercise Checkers ----------  
+        let orderSelected = [];  
+  
+        function orderWord(btn, word) {  
+            const drop = document.getElementById('orderDrop');  
+            if (btn.dataset.used === 'true') return;  
+            btn.dataset.used = 'true';  
+            btn.style.opacity = '0.4';  
+            const span = document.createElement('span');  
+            span.textContent = word;  
+            span.style.cssText =  
+                'background:var(--green-light);padding:4px 12px;border-radius:20px;font-weight:500;margin:2px;';  
+            span.dataset.word = word;  
+            drop.appendChild(span);  
+            orderSelected.push(word);  
+        }  
+  
+        function checkOrderExercise(correct) {  
+            const feedback = document.getElementById('orderFeedback');  
+            const selected = orderSelected.join(' ');  
+            if (selected === correct) {  
+                feedback.className = 'ex-feedback correct';  
+                feedback.innerHTML = '✅ Правильно!';  
+                handleCorrectExercise();  
+            } else {  
+                feedback.className = 'ex-feedback wrong';  
+                feedback.innerHTML = `❌ Неправильно. Правильный порядок: <strong>${correct}</strong>`;  
+                handleWrongExercise(correct);  
+            }  
+            // очищаем  
+            orderSelected = [];  
+            const drop = document.getElementById('orderDrop');  
+            if (drop) drop.innerHTML = '';  
+            document.querySelectorAll('#orderDrop ~ button[data-used]').forEach(b => {  
+                b.dataset.used = 'false';  
+                b.style.opacity = '1';  
+            });  
+        }  
+  
+        function checkExercise(btn, correct, type) {  
+            if (exerciseAnswered) return;  
+            const container = btn.closest('.exercise-container');  
+            const feedback = container.querySelector('.ex-feedback');  
+            const allBtns = container.querySelectorAll('.ex-options button');  
+            allBtns.forEach(b => b.classList.add('disabled'));  
+  
+            if (btn.textContent === correct) {  
+                btn.classList.add('selected-correct');  
+                feedback.className = 'ex-feedback correct';  
+                feedback.innerHTML = '✅ Правильно!';  
+                handleCorrectExercise();  
+            } else {  
+                btn.classList.add('selected-wrong');  
+                feedback.className = 'ex-feedback wrong';  
+                feedback.innerHTML = `❌ Неправильно. Правильный ответ: <strong>${correct}</strong>`;  
+                // подсветим правильный  
+                allBtns.forEach(b => {  
+                    if (b.textContent === correct) b.classList.add('selected-correct');  
+                });  
+                handleWrongExercise(correct);  
+            }  
+            exerciseAnswered = true;  
+        }  
+  
+        function checkFillExercise(correct) {  
+            const input = document.getElementById('fillInput');  
+            const feedback = document.getElementById('fillFeedback');  
+            if (!input) return;  
+            const val = input.value.trim();  
+            if (!val) { feedback.className = 'ex-feedback wrong';  
+                feedback.innerHTML = '❌ Введите слово.'; return; }  
+            // простое сравнение (игнорируем регистр и пробелы)  
+            const norm = (s) => s.replace(/\s+/g, '').toLowerCase();  
+            if (norm(val) === norm(correct)) {  
+                feedback.className = 'ex-feedback correct';  
+                feedback.innerHTML = '✅ Правильно!';  
+                handleCorrectExercise();  
+            } else {  
+                feedback.className = 'ex-feedback wrong';  
+                feedback.innerHTML = `❌ Неправильно. Правильный ответ: <strong>${correct}</strong>`;  
+                handleWrongExercise(correct);  
+            }  
+            input.disabled = true;  
+        }  
+  
+        function handleCorrectExercise() {  
+            addXP(5);  
+            // Обновляем прогресс слова  
+            const wordId = getWordId(currentLessonId, lessonWordIndex);  
+            if (state.wordReviews[wordId]) {  
+                state.wordReviews[wordId].mistakes = 0;  
+                state.wordReviews[wordId].nextReview = Date.now() + 24 * 60 * 60 * 1000; // через день  
+            } else {  
+                state.wordReviews[wordId] = { mistakes: 0, nextReview: Date.now() + 24 * 60 * 60 * 1000 };  
+            }  
+            saveState();  
+            exerciseAnswered = true;  
+            // Автоматически перейти к следующему слову через 1.5с  
+            setTimeout(() => {  
+                if (lessonWordIndex < LESSONS_DATA.find(l => l.id === currentLessonId).words.length - 1) {  
+                    nextWord();  
+                } else {  
+                    // завершить урок  
+                    nextWord();  
+                }  
+            }, 1200);  
+        }  
+  
+        function handleWrongExercise(word) {  
+            const wordId = getWordId(currentLessonId, lessonWordIndex);  
+            if (!state.wordReviews[wordId]) {  
+                state.wordReviews[wordId] = { mistakes: 0, nextReview: Date.now() };  
+            }  
+            state.wordReviews[wordId].mistakes = (state.wordReviews[wordId].mistakes || 0) + 1;  
+            state.wordReviews[wordId].nextReview = Date.now() + 10 * 60 * 1000; // через 10 минут  
+            saveState();  
+            exerciseAnswered = true;  
+        }  
+  
+        // ---------- Navigation in lesson ----------  
+        function nextWord() {  
+            const lesson = LESSONS_DATA.find(l => l.id === currentLessonId);  
+            if (!lesson) return;  
+            if (lessonWordIndex < lesson.words.length - 1) {  
+                lessonWordIndex++;  
+                const progress = getLessonProgress(currentLessonId);  
+                progress.wordIndex = lessonWordIndex;  
+                saveState();  
+                exerciseAnswered = false;  
+                renderLesson();  
+            } else {  
+                // завершить урок  
+                if (!isLessonCompleted(currentLessonId)) {  
+                    state.completedLessons.push(currentLessonId);  
+                    addXP(20);  
+                    updateStreak();  
+                    saveState();  
+                    checkAchievements();  
+                    showToast('🎉 Урок пройден! +20 XP');  
+                }  
+                lessonWordIndex = lesson.words.length; // выходим  
+                renderLesson();  
+            }  
+        }  
+  
+        function prevWord() {  
+            if (lessonWordIndex > 0) {  
+                lessonWordIndex--;  
+                const progress = getLessonProgress(currentLessonId);  
+                progress.wordIndex = lessonWordIndex;  
+                saveState();  
+                exerciseAnswered = false;  
+                renderLesson();  
+            }  
+        }  
+  
+        function resetLesson() {  
+            if (confirm('Сбросить прогресс этого урока?')) {  
+                const progress = getLessonProgress(currentLessonId);  
+                progress.wordIndex = 0;  
+                lessonWordIndex = 0;  
+                state.completedLessons = state.completedLessons.filter(id => id !== currentLessonId);  
+                saveState();  
+                exerciseAnswered = false;  
+                renderLesson();  
+                showToast('🔄 Прогресс сброшен');  
+            }  
+        }  
+  
+        // ---------- Render: Profile ----------  
+        function renderProfile() {  
+            const container = viewProfile;  
+            const level = getLevel();  
+            const levelTitle = getLevelTitle(level);  
+            const total = getAllWords().length;  
+            const learned = state.completedLessons.reduce((acc, id) => {  
+                const lesson = LESSONS_DATA.find(l => l.id === id);  
+                return acc + (lesson ? lesson.words.length : 0);  
+            }, 0);  
+            const pct = getCompletionPercentage();  
+  
+            let html = `  
+            <div class="profile-header">  
+              <div class="avatar">${level <= 3 ? '🌱' : level <= 6 ? '🌿' : '🌟'}</div>  
+              <div class="name">Ученик</div>  
+              <div class="level">${levelTitle} · Уровень ${level}</div>  
+            </div>  
+  
+            <div class="stats-grid">  
+              <div class="stat"><div class="num">${state.xp}</div><div class="label">XP</div></div>  
+              <div class="stat"><div class="num">${state.streak}</div><div class="label">🔥 Серия</div></div>  
+              <div class="stat"><div class="num">${pct}%</div><div class="label">Прогресс</div></div>  
+              <div class="stat"><div class="num">${learned}</div><div class="label">Слов выучено</div></div>  
+              <div class="stat"><div class="num">${state.completedLessons.length}</div><div class="label">Уроков</div></div>  
+              <div class="stat"><div class="num">${(state.achievements||[]).length}</div><div class="label">Достижений</div></div>  
+            </div>  
+  
+            <div class="card">  
+              <h3 style="font-size:16px;margin-bottom:8px;">📊 Статистика</h3>  
+              <div style="font-size:14px;line-height:1.8;">  
+                <div>📚 Всего слов в курсе: <strong>${total}</strong></div>  
+                <div>✅ Изучено слов: <strong>${learned}</strong></div>  
+                <div>📖 Пройдено уроков: <strong>${state.completedLessons.length}/${LESSONS_DATA.length}</strong></div>  
+                <div>🏅 Достижений: <strong>${(state.achievements||[]).length}</strong></div>  
+                <div>📅 Последнее занятие: <strong>${state.lastStudyDate || '—'}</strong></div>  
+              </div>  
+            </div>  
+          `;  
+  
+            // Календарь (месяц)  
+            const now = new Date();  
+            const year = now.getFullYear();  
+            const month = now.getMonth();  
+            const firstDay = new Date(year, month, 1).getDay();  
+            const daysInMonth = new Date(year, month + 1, 0).getDate();  
+  
+            let calHtml =  
+                `<div class="card"><h3 style="font-size:16px;margin-bottom:6px;">📅 ${now.toLocaleString('ru', { month: 'long', year: 'numeric' })}</h3><div class="calendar-grid">`;  
+            const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];  
+            weekdays.forEach(d => calHtml += `<div style="text-align:center;font-size:11px;font-weight:600;color:var(--text-secondary);">${d}</div>`);  
+            // смещение (пн=0)  
+            const offset = (firstDay === 0 ? 6 : firstDay - 1);  
+            for (let i = 0; i < offset; i++) calHtml += `<div class="day empty"></div>`;  
+            for (let d = 1; d <= daysInMonth; d++) {  
+                const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;  
+                const active = state.calendar[key] || false;  
+                const isToday = d === now.getDate() && month === now.getMonth() && year === now.getFullYear();  
+                calHtml += `<div class="day ${active ? 'active' : ''} ${isToday ? 'today' : ''}">${d}</div>`;  
+            }  
+            calHtml += `</div></div>`;  
+            html += calHtml;  
+  
+            container.innerHTML = html;  
+        }  
+  
+        // ---------- Render: Achievements ----------  
+        function renderAchievements() {  
+            const container = viewAchievements;  
+            const allAch = [  
+                { id: 'first_lesson', label: 'Первый урок', icon: '🌟' },  
+                { id: 'five_lessons', label: '5 уроков', icon: '⭐' },  
+                { id: 'ten_lessons', label: '10 уроков', icon: '🏆' },  
+                { id: 'all_lessons', label: 'Все уроки', icon: '👑' },  
+                { id: 'streak_3', label: 'Серия [3 дня](x-apple-data-detectors://embedded-result/125956)', icon: '🔥' },  
+                { id: 'streak_7', label: 'Серия 7 дней', icon: '⚡' },  
+                { id: 'streak_30', label: 'Серия 30 дней', icon: '💎' },  
+                { id: 'xp_100', label: '100 XP', icon: '🎯' },  
+                { id: 'xp_500', label: '500 XP', icon: '🚀' },  
+                { id: 'xp_1000', label: '1000 XP', icon: '🌟' },  
+            ];  
+            const unlocked = state.achievements || [];  
+  
+            let html = `  
+            <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">🏅 Достижения</h2>  
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;">  
+              Получено: ${unlocked.length} из ${allAch.length}  
+            </div>  
+            <div class="achievement-grid">  
+              ${allAch.map(ach => {  
+                const isUnlocked = unlocked.includes(ach.id);  
+                return `  
+                  <div class="ach ${isUnlocked ? 'unlocked' : ''}">  
+                    <div class="icon">${ach.icon}</div>  
+                    <div class="label">${ach.label}</div>  
+                    ${isUnlocked ? '<div style="font-size:10px;color:var(--green-dark);">✅</div>' : '<div style="font-size:10px;color:var(--text-secondary);">🔒</div>'}  
+                  </div>  
+                `;  
+              }).join('')}  
+            </div>  
+          `;  
+  
+            container.innerHTML = html;  
+        }  
+  
+        // ---------- Render: Settings ----------  
+        function renderSettings() {  
+            const container = viewSettings;  
+            const settings = state.settings;  
+  
+            let html = `  
+            <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">⚙️ Настройки</h2>  
+  
+            <div class="card">  
+              <div class="settings-item">  
+                <div>  
+                  <div class="label">🔊 Звук</div>  
+                  <div class="desc">Включить озвучивание</div>  
+                </div>  
+                <div class="toggle ${settings.soundEnabled ? 'on' : ''}" onclick="toggleSetting('soundEnabled')">  
+                  <div class="thumb"></div>  
+                </div>  
+              </div>  
+              <div class="settings-item">  
+                <div>  
+                  <div class="label">🗣️ Скорость речи</div>  
+                  <div class="desc">${settings.speechRate || 0.9}</div>  
+                </div>  
+                <input type="range" min="0.5" max="1.5" step="0.1" value="${settings.speechRate || 0.9}"  
+                       oninput="setSpeechRate(this.value)" style="width:120px;">  
+              </div>  
+              <div class="settings-item">  
+                <div>  
+                  <div class="label">🗑️ Сбросить прогресс</div>  
+                  <div class="desc">Удалить все данные</div>  
+                </div>  
+                <button class="btn btn-small btn-danger" onclick="resetAllProgress()">Сбросить</button>  
+              </div>  
+              <div class="settings-item">  
+                <div>  
+                  <div class="label">📊 Экспорт данных</div>  
+                  <div class="desc">Сохранить прогресс в файл</div>  
+                </div>  
+                <button class="btn btn-small btn-primary" onclick="exportData()">Экспорт</button>  
+              </div>  
+              <div class="settings-item">  
+                <div>  
+                  <div class="label">📥 Импорт данных</div>  
+                  <div class="desc">Восстановить из файла</div>  
+                </div>  
+                <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">  
+                <button class="btn btn-small btn-primary" onclick="document.getElementById('importFile').click()">Импорт</button>  
+              </div>  
+            </div>  
+  
+            <div class="card text-center" style="font-size:13px;color:var(--text-secondary);">  
+              <div>Армянский с нуля · v2.0</div>  
+              <div style="margin-top:4px;">Сделано для самостоятельного изучения</div>  
+            </div>  
+          `;  
+  
+            container.innerHTML = html;  
+        }  
+  
+        // ---------- Settings functions ----------  
+        function toggleSetting(key) {  
+            state.settings[key] = !state.settings[key];  
+            saveState();  
+            renderSettings();  
+        }  
+  
+        function setSpeechRate(val) {  
+            state.settings.speechRate = parseFloat(val);  
+            saveState();  
+            renderSettings();  
+        }  
+  
+        function resetAllProgress() {  
+            if (confirm('Вы уверены? Весь прогресс будет удалён безвозвратно.')) {  
+                localStorage.removeItem(STATE_KEY);  
+                state = getDefaultState();  
+                saveState();  
+                updateHeader();  
+                navigateTo('viewHome');  
+                showToast('🗑️ Прогресс сброшен');  
+            }  
+        }  
+  
+        function exportData() {  
+            const data = JSON.stringify(state, null, 2);  
+            const blob = new Blob([data], { type: 'application/json' });  
+            const url = URL.createObjectURL(blob);  
+            const a = document.createElement('a');  
+            a.href = url;  
+            a.download = `armenian_progress_${getToday()}.json`;  
+            a.click();  
+            URL.revokeObjectURL(url);  
+            showToast('📤 Данные экспортированы');  
+        }  
+  
+        function importData(event) {  
+            const file = event.target.files[0];  
+            if (!file) return;  
+            const reader = new FileReader();  
+            reader.onload = (e) => {  
+                try {  
+                    const data = JSON.parse(e.target.result);  
+                    state = { ...getDefaultState(), ...data };  
+                    saveState();  
+                    updateHeader();  
+                    navigateTo('viewHome');  
+                    showToast('📥 Данные импортированы');  
+                } catch (err) {  
+                    showToast('❌ Ошибка импорта');  
+                }  
+            };  
+            reader.readAsText(file);  
+            event.target.value = '';  
+        }  
+  
+        // ---------- PWA ----------  
+        // Регистрируем service worker (inline)  
+        if ('serviceWorker' in navigator) {  
+            // Создаём простой SW из строки  
+            const swCode = `  
+            self.addEventListener('install', e => {  
+              e.waitUntil(  
+                caches.open('armenian-v1').then(cache => {  
+                  return cache.addAll([  
+                    '/',  
+                    '/index.html'  
+                  ]);  
+                })  
+              );  
+              self.skipWaiting();  
+            });  
+            self.addEventListener('activate', e => {  
+              e.waitUntil(clients.claim());  
+            });  
+            self.addEventListener('fetch', e => {  
+              e.respondWith(  
+                caches.match(e.request).then(response => {  
+                  return response || fetch(e.request);  
+                })  
+              );  
+            });  
+          `;  
+            try {  
+                const blob = new Blob([swCode], { type: 'application/javascript' });  
+                const swUrl = URL.createObjectURL(blob);  
+                // используем регистрацию  
+                // но blob URL не работает для SW, поэтому просто игнорируем  
+                // Вместо этого добавим мета-теги для PWA  
+            } catch (e) { /* ignore */ }  
+        }  
+  
+        // Добавляем мета-теги PWA через JS  
+        function setupPWA() {  
+            // manifest уже есть в link, но пустой — добавим динамически  
+            const manifest = {  
+                name: 'Армянский с нуля',  
+                short_name: 'Армянский',  
+                start_url: '/',  
+                display: 'standalone',  
+                background_color: '#ffffff',  
+                theme_color: '#58CC71',  
+                icons: [{  
+                    src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%2358CC71"/><text x="50" y="68" font-size="56" text-anchor="middle" fill="%23ffffff" font-family="sans-serif">**Հ**</text></svg>',  
+                    sizes: '192x192',  
+                    type: 'image/svg+xml'  
+                }]  
+            };  
+            const link = document.querySelector('link[rel="manifest"]');  
+            if (link) {  
+                link.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(manifest));  
+            }  
+        }  
+        setupPWA();  
+  
+        // ---------- Навигация по кнопкам ----------  
+        document.querySelectorAll('.bottom-nav button').forEach(btn => {  
+            btn.addEventListener('click', () => {  
+                navigateTo(btn.dataset.view);  
+            });  
+        });  
+  
+        // ---------- Инициализация ----------  
+        function init() {  
+            const loaded = loadState();  
+            if (!loaded) {  
+                // первый запуск  
+                state = getDefaultState();  
+                saveState();  
+            }  
+            updateStreak();  
+            updateHeader();  
+            navigateTo('viewHome');  
+  
+            // предзагрузка голосов  
+            if (window.speechSynthesis) {  
+                window.speechSynthesis.getVoices();  
+                window.speechSynthesis.onvoiceschanged = () => {  
+                    window.speechSynthesis.getVoices();  
+                };  
+            }  
+        }  
+  
+        init();  
+  
+        // Для глобального доступа  
+        window.navigateTo = navigateTo;  
+        window.openLesson = openLesson;  
+        window.nextWord = nextWord;  
+        window.prevWord = prevWord;  
+        window.resetLesson = resetLesson;  
+        window.speak = speak;  
+        window.checkExercise = checkExercise;  
+        window.checkFillExercise = checkFillExercise;  
+        window.checkOrderExercise = checkOrderExercise;  
+        window.orderWord = orderWord;  
+        window.toggleSetting = toggleSetting;  
+        window.setSpeechRate = setSpeechRate;  
+        window.resetAllProgress = resetAllProgress;  
+        window.exportData = exportData;  
+        window.importData = importData;  
+        window.showToast = showToast;  
+        window.renderHome = renderHome;  
+        window.renderLessons = renderLessons;  
+        window.renderProfile = renderProfile;  
+        window.renderAchievements = renderAchievements;  
+        window.renderSettings = renderSettings;  
+        window.getLessonProgress = getLessonProgress;  
+        window.isLessonCompleted = isLessonCompleted;  
+        window.isLessonUnlocked = isLessonUnlocked;  
+        window.getCompletionPercentage = getCompletionPercentage;  
+        window.getLevel = getLevel;  
+        window.getLevelTitle = getLevelTitle;  
+        window.addXP = addXP;  
+        window.updateStreak = updateStreak;  
+        window.checkAchievements = checkAchievements;  
+        window.updateHeader = updateHeader;  
+        window.handleCorrectExercise = handleCorrectExercise;  
+        window.handleWrongExercise = handleWrongExercise;  
+        window.getAllWords = getAllWords;  
+        window.getWordsForReview = getWordsForReview;  
+    </script>  
+</body>  
+</html>  
+```  
